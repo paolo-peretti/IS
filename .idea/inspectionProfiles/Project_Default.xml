@@ -1,0 +1,48 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="4">
+            <item index="0" class="java.lang.String" itemvalue="beautifulsoup4" />
+            <item index="1" class="java.lang.String" itemvalue="requests" />
+            <item index="2" class="java.lang.String" itemvalue="Flask-SQLAlchemy" />
+            <item index="3" class="java.lang.String" itemvalue="Flask-Login" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E303" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="trydjango.trydjango.urls.views" />
+          <option value="views" />
+          <option value="trydjango.trydjango.urls.pages" />
+          <option value="trydjango.trydjango.urls.products" />
+          <option value="flask_app.routes.main.json" />
+          <option value="main.self" />
+          <option value="main.SnkrsApp" />
+          <option value="main.ids" />
+          <option value="flask_app.drivecloud.driveCloud.*" />
+          <option value="wsgi.date_time" />
+          <option value="cchardset" />
+          <option value="flask_app.routes.login.*" />
+          <option value="ImageChops" />
+          <option value="quart_app.routes.login.flask_login" />
+          <option value="methods.words" />
+          <option value="methods1" />
+          <option value="en_core_web_sm" />
+          <option value="sklearn.preprocessing.Imputer" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
