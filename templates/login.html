@@ -49,6 +49,16 @@
 					</div>
 				</form>
 			</div>
+			{% block content %}
+				{% with messages = get_flashed_messages() %}
+					{% if messages %}
+						{% for msg in messages %}
+							<p>{{msg}}</p>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+			{% endblock %}
+
 			<div class="card-footer">
 				<div class="d-flex justify-content-center links">
 					Don't have an account?<a href="#">Sign Up</a>
