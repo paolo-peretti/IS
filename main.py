@@ -27,7 +27,7 @@ def login():
 
 
 @app.route('/logout')
-def login():
+def logout():
     session.pop("user", None)
     return redirect(url_for("index"))
 
