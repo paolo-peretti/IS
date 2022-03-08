@@ -1,7 +1,6 @@
 from flask import render_template, request, session, flash, url_for, redirect
 from extensions import app, db
-
-from utils import auth
+from utils import *
 
 
 @app.route('/')
@@ -24,7 +23,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        msg = auth([username, password])
+        msg = check_auth([username, password])
 
         if msg == '':
             session["user"] = username
@@ -39,28 +38,38 @@ def login():
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
+
     if request.method == 'POST':
 
         username = request.form["username"]
         email = request.form["email"]
         password = request.form["password"]
+        password_confirm = request.form["confirm_password"]
 
-        session["user"] = username
+        info_user = [username, email, password, password_confirm]
 
-        # found_user = User.query.filter_by(email=email).first()
-        #
-        # if found_user:
-        #     flash('This email address is already registered.', 'info')
-        #     return render_template('login.html')
-        # else:
-        #     usr = User(username, 'username', password)
-        #     db.session.add(usr)
-        #     db.session.commit()
-        #
-        # flash("You have been logged in.", "info")
-        return redirect(url_for("index"))
+        msg = check_registration_info(info_user)
+
+        if msg == '':
+            status = add_user(info_user)
+            if status:
+                session["user"] = username
+
+                flash('Welcome! You have registered successfully!', 'info')
+                return redirect(url_for("index"))
+            else:
+                flash('Something went wrong, please try again.', 'error')
+                return render_template('login.html', type='signUp')
+        else:
+            flash(msg, 'message')
+            return render_template('login.html', type='signUp')
     else:
         return render_template('login.html', type='signUp')
+
+
+
+
+
 
 
 @app.route('/logout')
