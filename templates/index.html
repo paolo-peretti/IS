@@ -26,19 +26,32 @@
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="#">Sign In</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Sign Up</a>
-        </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="#">{{usr}}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Log out</a>
-        </li>
+
+
+          {% if usr != None %}
+            <li class="nav-item">
+              <a class="nav-link" href="#">{{usr}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Log out</a>
+            </li>
+          {% endif %}
+          {% if usr == None %}
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Sign In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Sign Up</a>
+            </li>
+          {% endif %}
+
+
+
+
+
+
+
 
 
 

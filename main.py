@@ -9,8 +9,8 @@ def index():
     if "user" in session:
         user = session["user"]
         return render_template('index.html', usr=user)
-
-    return render_template('index.html')
+    else:
+        return render_template('index.html', usr=None)
 
 
 
