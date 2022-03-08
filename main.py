@@ -10,7 +10,7 @@ def index():
         user = session["user"]
         return render_template('index.html', usr=user)
     else:
-        return render_template('index.html', usr=None)
+        return render_template('index.html')
 
 
 
@@ -36,7 +36,33 @@ def login():
         flash("You have been logged in.", "info")
         return redirect(url_for("index"))
     else:
-        return render_template('login.html')
+        return render_template('login.html', type='signIn')
+
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+
+        username = request.form["username"]
+        email = request.form["email"]
+        password = request.form["password"]
+
+        session["user"] = username
+
+        # found_user = User.query.filter_by(email=email).first()
+        #
+        # if found_user:
+        #     flash('This email address is already registered.', 'info')
+        #     return render_template('login.html')
+        # else:
+        #     usr = User(username, 'username', password)
+        #     db.session.add(usr)
+        #     db.session.commit()
+        #
+        # flash("You have been logged in.", "info")
+        return redirect(url_for("index"))
+    else:
+        return render_template('login.html', type='signUp')
 
 
 @app.route('/logout')

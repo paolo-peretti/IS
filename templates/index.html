@@ -29,7 +29,7 @@
 
 
 
-          {% if usr != None %}
+          {% if usr != undefined %}
             <li class="nav-item">
               <a class="nav-link" href="#">{{usr}}</a>
             </li>
@@ -37,12 +37,12 @@
               <a class="nav-link" href="/logout">Log out</a>
             </li>
           {% endif %}
-          {% if usr == None %}
+          {% if usr == undefined %}
             <li class="nav-item">
               <a class="nav-link" href="/login">Sign In</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Sign Up</a>
+              <a class="nav-link" href="/register">Sign Up</a>
             </li>
           {% endif %}
 
