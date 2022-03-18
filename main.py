@@ -10,7 +10,9 @@ def index():
         user = session["user"]
         return render_template('index.html', usr=user)
 
-    return render_template('index.html')
+    items=['ciao','cio', 'pos', 'sdcjic']
+
+    return render_template('index.html', items=items)
 
 
 
