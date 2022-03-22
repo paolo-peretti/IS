@@ -6,13 +6,16 @@ from utils import *
 @app.route('/')
 def index():
 
+    search_query = [None, 1, None, None, ['bed']]
+    listings = get_listings(search_query)
+
     if "user" in session:
         user = session["user"]
-        return render_template('index.html', usr=user)
+        return render_template('index.html', usr=user, items=listings)
 
-    items=['ciao','cio', 'pos', 'sdcjic']
 
-    return render_template('index.html', items=items)
+
+    return render_template('index.html', items=listings)
 
 
 

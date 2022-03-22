@@ -1,6 +1,62 @@
-from models import User
+from models import User, Listing
 from extensions import db
 import re
+
+
+
+def get_listings(search_query):
+
+    # search_query = [distrect, num_room, min, max, features]
+
+    check_for_AND_sintax = False
+
+    query = "SELECT * FROM listings WHERE "
+    if search_query[0] != None: # distrect
+        query += "listings.distrect = '" + search_query[0] +"' "
+        check_for_AND_sintax = True
+    if search_query[1] != None: # Num rooms
+        if check_for_AND_sintax:
+            query += "AND "
+        query += "listings.num_room >= '"+ str(search_query[1]) + "' "
+        check_for_AND_sintax = True
+    if search_query[2] != None: # Min Price
+        if check_for_AND_sintax:
+            query += "AND "
+        query += " listings.price >= '" + str(search_query[2]) + "' "
+        check_for_AND_sintax = True
+    if search_query[3] != None:  # Max Price
+        if check_for_AND_sintax:
+            query += "AND "
+        query += "listings.price <= '" + str(search_query[3]) + "' "
+    query += "ORDER BY listings.price; "
+
+
+    result_query = db.engine.execute(query)
+
+    results = result_query.fetchall()
+
+    if search_query[4] != None:  # features
+        listings = []
+        for result in results:
+            features = str(result[len(result) - 1])
+            if ',' in features:
+                features = features.split(',')
+            else:
+                features=[features]
+
+
+            features_founded = 0
+            for feature in features:
+                if feature in search_query[4]:
+                    features_founded += 1
+
+            if features_founded == len(search_query[4]):
+                listings += [result]
+
+    print(listings)
+
+    return listings
+
 
 def decoding_password(password):
     return password
