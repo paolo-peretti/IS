@@ -42,8 +42,7 @@ def get_listings(search_query):
             if ',' in features:
                 features = features.split(',')
             else:
-                features=[features]
-
+                features = [features]
 
             features_founded = 0
             for feature in features:
@@ -53,7 +52,7 @@ def get_listings(search_query):
             if features_founded == len(search_query[4]):
                 listings += [result]
 
-    print(listings)
+
 
     return listings
 
