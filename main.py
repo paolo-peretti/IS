@@ -3,22 +3,71 @@ from extensions import app, db
 from utils import *
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def index():
+
+    if request.method == 'POST':
+
+
+        district = request.form["district"]
+        num_rooms = request.form["num_rooms"]
+        min_price = request.form["min_price"]
+        max_price = request.form["max_price"]
+
+
+
+        # features
+        features=[]
+        try:
+            bed = request.form["bed"]
+            if 'on' in bed:
+                features.append('bed')
+        except Exception:
+            pass
+        try:
+            bathroom = request.form["bathroom"]
+            if 'on' in bathroom:
+                features.append('bathroom')
+        except Exception:
+            pass
+
+
+
+
+
+        search_query = [district, num_rooms, min_price, max_price, features]
+        items = get_listings(search_query)
+
+        if "user" in session:
+            user = session["user"]
+            return render_template('index.html', usr=user, items=items)
+
+        return render_template('index.html', items=items)
+
+
+    else:
+
+        if "user" in session:
+            user = session["user"]
+            return render_template('index.html', usr=user)
+
+
+        return render_template('index.html')
+
+
+@app.route('/search')
+def search():
 
     search_query = [None, 1, None, None, ['bed']]
     listings = get_listings(search_query)
 
     if "user" in session:
         user = session["user"]
-        return render_template('index.html', usr=user, items=listings)
+        return render_template('index.html', usr=user)
 
 
 
-    return render_template('index.html', items=listings)
-
-
-
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['POST', 'GET'])
