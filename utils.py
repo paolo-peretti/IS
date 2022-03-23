@@ -3,6 +3,12 @@ from extensions import db
 import re
 
 
+all_districts = ['Centro', 'Crocetta', 'Santa Rita', 'Mirafiori Nord', 'Borgo San Paolo', 'Cenisia', 'Pozzo Strada', 'Cit Turin', 'Borgata Lesna', 'San Donato']
+all_districts += ['Campidoglio', 'Parella', 'Borgo Vittoria', 'Madonna di Campagna', 'Lucento', 'Vallette', 'Barriera di Milano', 'Regio Parco', 'Barca', 'Bertolla']
+all_districts += ['Falchera', 'Rebaudengo', 'Villaretto', 'Aurora', 'Vanchiglia', 'Sassi', 'Madonna del Pilone', 'San Salvario', 'Cavoretto', 'Borgo Po']
+all_districts += ['Nizza Millefonti', 'Lingotto', 'Filadelfia', 'Mirafiori Sud']
+
+
 
 def get_listings(search_query):
 

@@ -10,49 +10,59 @@ def index():
 
 
         district = request.form["district"]
-        num_rooms = request.form["num_rooms"]
+
+
+
+
         min_price = request.form["min_price"]
         max_price = request.form["max_price"]
 
 
 
+
+        if district not in all_districts:
+            district=''
+
         # features
         features=[]
         try:
-            bed = request.form["bed"]
-            if 'on' in bed:
-                features.append('bed')
-        except Exception:
-            pass
-        try:
             bathroom = request.form["bathroom"]
-            if 'on' in bathroom:
-                features.append('bathroom')
+            features.append(bathroom)
         except Exception:
-            pass
+            bathroom=''
+        try:
+            furnished = request.form['furnished']
+            if 'yes' in furnished:
+                features.append('furnished')
+        except Exception:
+            furnished=''
+        try:
+            dishwasher = request.form['dishwasher']
+            if 'on' in dishwasher:
+                features.append('dishwasher')
+        except Exception:
+            dishwasher=''
 
+        print(furnished, min_price, max_price, dishwasher, bathroom)
 
-
-
-
-        search_query = [district, num_rooms, min_price, max_price, features]
+        search_query = [district, '', min_price, max_price, []]
         items = get_listings(search_query)
 
         if "user" in session:
             user = session["user"]
-            return render_template('index.html', usr=user, items=items)
+            return render_template('index.html', usr=user, items=items, all_districts=all_districts)
 
-        return render_template('index.html', items=items)
+        return render_template('index.html', items=items, all_districts=all_districts)
 
 
     else:
 
         if "user" in session:
             user = session["user"]
-            return render_template('index.html', usr=user)
+            return render_template('index.html', usr=user, all_districts=all_districts)
 
 
-        return render_template('index.html')
+        return render_template('index.html', all_districts=all_districts)
 
 
 @app.route('/search')
