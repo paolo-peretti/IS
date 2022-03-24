@@ -3,7 +3,7 @@ from extensions import db
 import re
 import random
 from costants import *
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
@@ -134,6 +134,7 @@ def get_listings(search_query):
 
 
 def decoding_password(password):
+
     return password
 
 def encoding_password(password):
@@ -157,7 +158,7 @@ def check_auth(info_user):
     else:
         found_user = User.query.filter_by(username=username).first()
         if found_user:
-            password = decoding_password(password)
+            password = decoding_password(found_user.password)
             if found_user.password != password:
                 msg = 'This password is incorrect!'
         else:
