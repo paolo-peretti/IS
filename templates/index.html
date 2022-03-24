@@ -299,7 +299,7 @@
 
 
 
-<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#FFFFFF;padding: 0.1%;">
+<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#f4f2f4;padding: 0.1%;">
 
         <div></div>
         {% for item in items %}
@@ -307,15 +307,33 @@
         <div class="row" style="margin-bottom:30px;margin-top:30px;width:80%;margin-left:10%;margin-right:10%;">
 
 
-            <div class="col-md-4">
+            <div class="col-md-4" >
                 <img src={{ item[1] }} alt="Image of the house">
 
                 </div>
-            <div class="col-md-4">
-                <label>{{ item[0] }}</label>
+
+            <div class="col-xl" style="margin-left:10%;">
+
+                <h4>District : {{ item[0][2] }}</h4>
+
+                <h5>Address : {{ item[0][1] }}</h5>
+
+                <h5>Price : {{ item[0][4] }} €</h5>
+
+                <h5>Features :</h5>
+                <p>{{ item[0][5] }}</p>
 
                 </div>
+
+            <div class="col-sm" >
+
+                <button type="button" class="btn btn-primary" style="margin-top:30%;margin-bottom:30%;">Contact Owner</button>
+
+
+                </div>
+
         </div>
+        <hr>
 
         <div></div>
 
