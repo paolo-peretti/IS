@@ -5,6 +5,10 @@ import random
 from costants import *
 
 
+
+
+
+
 def get_feature_value(request, feature):
 
     try:
@@ -20,7 +24,10 @@ def get_feature_value(request, feature):
 
 def get_listings(search_query):
 
-    # search_query = [district, num_room, min, max, features]
+
+
+    # search_query = [district, type_room, min, max, features]
+
 
     check_for_AND_sintax = False
 
@@ -31,15 +38,7 @@ def get_listings(search_query):
         query += "listings.district = '" + search_query[0] + "' "
         check_for_AND_sintax = True
 
-    if search_query[1] != '': # Num rooms
 
-        if check_for_AND_sintax:
-            query += "AND "
-        else:
-            query += 'WHERE '
-
-        query += "listings.num_room >= '"+ str(search_query[1]) + "' "
-        check_for_AND_sintax = True
 
     if search_query[2] != '': # Min Price
 
@@ -67,30 +66,66 @@ def get_listings(search_query):
 
     results = result_query.fetchall()
 
-    if search_query[4] != []:  # features
-        listings = []
+    listings_with_images = []
+
+    if search_query[4] != [] or search_query[1] != '':  # features and types
+
+
+
+
         for result in results:
-            features = str(result[len(result) - 1])
-            if ',' in features:
-                features = features.split(',')
+
+            if search_query[4] != [] :
+
+                features = str(result[5])
+
+                if ',' in features:
+                    features = features.split(',')
+                else:
+                    features = [features]
+
+
+
+                check_features = all(result in features for result in search_query[4])
+
+
             else:
-                features = [features]
+                check_features = True
 
-            features_founded = 0
-            for feature in features:
-                if feature in search_query[4]:
-                    features_founded += 1
 
-            if features_founded == len(search_query[4]):
-                listings += [result]
+
+            if search_query[1] != '':
+
+                types_available = str(result[3])
+
+
+                types_available = types_available.split(',')
+
+
+
+                check_types = search_query[1] in types_available
+            else:
+                check_types = True
+
+
+
+
+            if check_features and check_types:
+                # listings += [result]
+                random_image_index = random.randrange(len(all_images))
+                listings_with_images.append((result, all_images[random_image_index]))
+
+
+
     else:
+
         listings = results
 
+        for listing in listings:
+            random_image_index = random.randrange(len(all_images))
+            listings_with_images.append((listing, all_images[random_image_index]))
 
-    listings_with_images = []
-    for listing in listings:
-        random_image_index = random.randrange(len(all_images))
-        listings_with_images.append((listing, all_images[random_image_index]))
+
 
 
     return listings_with_images

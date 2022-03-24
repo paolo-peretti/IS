@@ -20,20 +20,24 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 
+
+
 class Listing(db.Model):
     __tablename__ = 'listings'
 
     house_ID = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(120), nullable=False)
     district = db.Column(db.String(120), nullable=False)
-    num_room = db.Column(db.Integer, nullable=False)
+    type_room = db.Column(db.String(120), nullable=False)
     price = db.Column(db.Float, nullable=False)
     features = db.Column(db.String(300), nullable=False)
+    owner_id = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, address, district, num_room, price,features):
+    def __init__(self, address, district, type_room, price, features, owner_id):
         self.address = address
         self.district = district
-        self.num_room = num_room
+        self.type_room = type_room
         self.price = price
         self.features = features
+        self.owner_id = owner_id
 

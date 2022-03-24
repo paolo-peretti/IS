@@ -209,7 +209,7 @@
                               <div class="col-md-4">
                                 <label>Type of house:</label>
                                 <select class="form-select" aria-label="Default select example" name="type_room">
-                                <option selected>room</option>
+                                    <option selected>room</option>
                                   <option>double room</option>
                                   <option>apartment</option>
 
@@ -330,6 +330,7 @@
 
                 <h5>Price : {{ item[0][4] }} €</h5>
 
+
                 <h5>Features :</h5>
                 <p>{{ item[0][5] }}</p>
 
@@ -337,7 +338,9 @@
 
             <div class="col-sm" >
 
-                <a href="/send_message" class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
+<!--                sending a message requires the id of the owner-->
+
+                <a href="{{ url_for('send_message',id_owner=item[0][6]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
 
 
                 </div>

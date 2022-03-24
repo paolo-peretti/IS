@@ -18,7 +18,6 @@ def index():
 
 
 
-
         if district not in all_districts:
             district=''
 
@@ -45,7 +44,15 @@ def index():
 
 
 
-        search_query = [district, '', min_price, max_price, features]
+        try:
+            type_room = request.form['type_room']
+        except Exception:
+            type_room = ''
+
+
+
+
+        search_query = [district, type_room, min_price, max_price, features]
         items = get_listings(search_query)
 
         if "user" in session:
@@ -65,12 +72,17 @@ def index():
         return render_template('index.html', all_districts=all_districts)
 
 
-@app.route('/send_message', methods=['POST', 'GET'])
-def send_message():
+
+
+
+@app.route('/send_message/<id_owner>', methods=['POST', 'GET'])
+def send_message(id_owner):
     if request.method == 'POST':
         pass
 
     else:
+
+        print(id_owner)
 
         if "user" in session:
             user = session["user"]
