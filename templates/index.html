@@ -222,8 +222,7 @@
 
                                 <label>Furnished ?</label>
                                 <div>
-                                <input type="radio" id="huey" name="furnished" value="yes"
-                                       checked>
+                                <input type="radio" id="huey" name="furnished" value="yes">
                                 <label for="huey">Yes</label>
                               </div>
 
@@ -244,8 +243,7 @@
                                 <div class="col-md-4">
                                   <label>Bathroom</label>
                                   <div>
-                                    <input type="radio" id="bat1" name="bathroom" value="private bathroom"
-                                           checked>
+                                    <input type="radio" id="bat1" name="bathroom" value="private bathroom">
                                     <label for="bat1">private bathroom</label>
                                   </div>
 
@@ -303,17 +301,34 @@
 
 
 
+
+
+
+
 <div id="search-box">
 
 
         {% for item in items %}
 
+        <div class="row" style="margin-top: 30px;">
 
-          <div style="margin-top:20px;margin-left:20%;margin-right:20%;background:#FFFFFF;">
-            <a href="#">{{item}}</a>
-            <p>Ciao {{item}}</p>
 
-          </div>
+            <div class="col-md-4">
+                <img src={{ item[1] }} alt="Image of the house">
+
+                </div>
+            <div class="col-md-4">
+                <label>{{ item[0] }}</label>
+
+                </div>
+        </div>
+
+
+<!--          <div style="margin-top:20px;margin-left:20%;margin-right:20%;background:#FFFFFF;">-->
+<!--            <a href="#">{{item}}</a>-->
+<!--            <p>Ciao {{item}}</p>-->
+
+<!--          </div>-->
 
         {% endfor %}
 

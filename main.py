@@ -13,7 +13,6 @@ def index():
 
 
 
-
         min_price = request.form["min_price"]
         max_price = request.form["max_price"]
 
@@ -26,7 +25,7 @@ def index():
         # features
         features=[]
         try:
-            bathroom = request.form["bathroom"]
+            bathroom = request.form["bathroom"] # private bathroom or shared bathroom
             features.append(bathroom)
         except Exception:
             bathroom=''
@@ -36,16 +35,17 @@ def index():
                 features.append('furnished')
         except Exception:
             furnished=''
-        try:
-            dishwasher = request.form['dishwasher']
-            if 'on' in dishwasher:
-                features.append('dishwasher')
-        except Exception:
-            dishwasher=''
 
-        print(furnished, min_price, max_price, dishwasher, bathroom)
+        # features
 
-        search_query = [district, '', min_price, max_price, []]
+        for feature in all_features_with_checkbox:
+            value = get_feature_value(request, feature)
+            if value != '':
+                features.append(value)
+
+
+
+        search_query = [district, '', min_price, max_price, features]
         items = get_listings(search_query)
 
         if "user" in session:
@@ -63,6 +63,11 @@ def index():
 
 
         return render_template('index.html', all_districts=all_districts)
+
+
+
+
+
 
 
 @app.route('/search')

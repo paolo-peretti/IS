@@ -1,12 +1,20 @@
 from models import User, Listing
 from extensions import db
 import re
+import random
+from costants import *
 
 
-all_districts = ['Centro', 'Crocetta', 'Santa Rita', 'Mirafiori Nord', 'Borgo San Paolo', 'Cenisia', 'Pozzo Strada', 'Cit Turin', 'Borgata Lesna', 'San Donato']
-all_districts += ['Campidoglio', 'Parella', 'Borgo Vittoria', 'Madonna di Campagna', 'Lucento', 'Vallette', 'Barriera di Milano', 'Regio Parco', 'Barca', 'Bertolla']
-all_districts += ['Falchera', 'Rebaudengo', 'Villaretto', 'Aurora', 'Vanchiglia', 'Sassi', 'Madonna del Pilone', 'San Salvario', 'Cavoretto', 'Borgo Po']
-all_districts += ['Nizza Millefonti', 'Lingotto', 'Filadelfia', 'Mirafiori Sud']
+def get_feature_value(request, feature):
+
+    try:
+        feature_value = request.form[feature]
+        if 'on' in feature_value:
+            return feature
+        else:
+            return ''
+    except Exception:
+        return ''
 
 
 
@@ -79,7 +87,13 @@ def get_listings(search_query):
         listings = results
 
 
-    return listings
+    listings_with_images = []
+    for listing in listings:
+        random_image_index = random.randrange(len(all_images))
+        listings_with_images.append((listing, all_images[random_image_index]))
+
+
+    return listings_with_images
 
 
 
