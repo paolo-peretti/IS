@@ -138,7 +138,7 @@
 
 
     <h1 style="color:black;
-    font-size:42px;
+    font-size:63px;
     text-align:center;
     display:inline-block;
     position:relative;
@@ -304,9 +304,10 @@
 
 
 
-<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#f4f2f4;padding: 0.1%;">
+<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#f4f2f4;padding:0.1%;">
 
         <div></div>
+    {% if items != [] %}
         {% for item in items %}
 
         <hr>
@@ -334,7 +335,7 @@
 
             <div class="col-sm" >
 
-                <a href="/login" class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
+                <a href="/" class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
 
 
                 </div>
@@ -347,6 +348,11 @@
 
 
         {% endfor %}
+    {% else %}
+    <div style="margin-right: 20%;margin-left:20%;color:red;">
+        <h3 >No results match the requirements you are looking for!</h3>
+    </div>
+    {% endif %}
 
     </div>
 
