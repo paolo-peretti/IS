@@ -65,24 +65,22 @@ def index():
         return render_template('index.html', all_districts=all_districts)
 
 
+@app.route('/send_message', methods=['POST', 'GET'])
+def send_message():
+    if request.method == 'POST':
+        pass
+
+    else:
+
+        if "user" in session:
+            user = session["user"]
+            return render_template('send_message.html', usr=user)
+
+        return render_template('login.html', type='signIn')
 
 
 
 
-
-@app.route('/search')
-def search():
-
-    search_query = [None, 1, None, None, ['bed']]
-    listings = get_listings(search_query)
-
-    if "user" in session:
-        user = session["user"]
-        return render_template('index.html', usr=user)
-
-
-
-    return render_template('index.html')
 
 
 @app.route('/login', methods=['POST', 'GET'])

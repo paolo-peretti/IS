@@ -304,9 +304,11 @@
 
 
 
-<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#f4f2f4;padding:0.1%;">
+<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#f4f2f4;">
 
-        <div></div>
+    {% if items != undefined %}
+
+        <div style="padding:0.1%;">
     {% if items != [] %}
         {% for item in items %}
 
@@ -335,7 +337,7 @@
 
             <div class="col-sm" >
 
-                <a href="/" class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
+                <a href="/send_message" class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
 
 
                 </div>
@@ -352,6 +354,10 @@
     <div style="margin-right: 20%;margin-left:20%;color:red;">
         <h3 >No results match the requirements you are looking for!</h3>
     </div>
+    {% endif %}
+
+    </div>
+
     {% endif %}
 
     </div>
