@@ -1,7 +1,7 @@
 from functools import wraps
 
 from flask import render_template, request, session, flash, url_for, redirect
-from flask_login import login_required, LoginManager, logout_user, login_user
+
 
 from extensions import app, db
 from utils import *
@@ -81,6 +81,19 @@ def index():
         return render_template('index.html', all_districts=all_districts)
 
 
+def login_required(func):
+    '''Decorator that reports the execution time.'''
+
+    def wrap(*args, **kwargs):
+        if 'logged in' in session:
+            result = func(*args, **kwargs)
+            return result
+        else:
+            flash('you need to login')
+            return redirect(url_for('login'))
+
+
+    return wrap
 
 
 @app.route('/send_message/<id_owner>', methods=['POST', 'GET'])
@@ -162,6 +175,7 @@ def register():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     session.pop("user", None)
     return redirect(url_for("index"))
