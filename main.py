@@ -1,7 +1,7 @@
 from functools import wraps
 
 from flask import render_template, request, session, flash, url_for, redirect
-from flask_login import LoginManager, login_required, login_user
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from extensions import app, db
 from utils import *
@@ -174,18 +174,15 @@ def register():
 
 
 @app.route('/logout')
+@login_required
 def logout():
+    # print(current_user)
     session.pop("user", None)
+    logout_user()
     return redirect(url_for("index"))
 
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-@app.errorhandler(500)
-def page_not_found(e):
-    return render_template('500.html'), 500
 
 
 
