@@ -164,7 +164,7 @@ def check_auth(info_user):
         else:
             msg = 'This username is not found. Please check you have written it correctly.'
 
-    return msg
+    return msg, found_user
 
 
 def check_registration_info(info_user):

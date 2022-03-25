@@ -1,14 +1,21 @@
 from functools import wraps
 
 from flask import render_template, request, session, flash, url_for, redirect
-
+from flask_login import LoginManager, login_required, login_user
 
 from extensions import app, db
 from utils import *
+from models import User
 
 
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 
@@ -81,23 +88,12 @@ def index():
         return render_template('index.html', all_districts=all_districts)
 
 
-def login_required(func):
-    '''Decorator that reports the execution time.'''
-
-    def wrap(*args, **kwargs):
-        if 'logged in' in session:
-            result = func(*args, **kwargs)
-            return result
-        else:
-            flash('you need to login')
-            return redirect(url_for('login'))
-
-
-    return wrap
 
 
 @app.route('/send_message/<id_owner>', methods=['POST', 'GET'])
+@login_required
 def send_message(id_owner):
+    # print(id_owner)
 
     if request.method == 'POST':
         pass
@@ -108,9 +104,10 @@ def send_message(id_owner):
 
         if "user" in session:
             user = session["user"]
+            print(user)
             return render_template('send_message.html', usr=user)
 
-        return redirect(url_for("login"))
+        # return redirect(url_for("login"))
 
 
 
@@ -124,10 +121,12 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        msg = check_auth([username, password])
+        msg, user = check_auth([username, password])
 
         if msg == '':
             session["user"] = username
+
+            login_user(user)
 
             return redirect(url_for("index"))
         else:
@@ -175,7 +174,6 @@ def register():
 
 
 @app.route('/logout')
-@login_required
 def logout():
     session.pop("user", None)
     return redirect(url_for("index"))
