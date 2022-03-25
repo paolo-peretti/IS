@@ -3,7 +3,7 @@ from extensions import db
 import re
 import random
 from costants import *
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 
@@ -169,7 +169,7 @@ def check_auth(info_user):
 
 def check_registration_info(info_user):
 
-    username, email, password, password_confirm = info_user
+    username, email, password, password_confirm, name, type_user = info_user
     msg = ''
     if username == '':
         msg = 'Missing username.'
@@ -177,6 +177,8 @@ def check_registration_info(info_user):
         msg = 'Missing password.'
     elif email == '':
         msg = 'Missing email.'
+    elif name == '':
+        msg = 'Missing name.'
     elif password != password_confirm:
         msg = 'Password confirmation was unsuccessful.'
     elif check_email(email) == False:
@@ -195,9 +197,9 @@ def check_registration_info(info_user):
 
 def add_user(info_user):
 
-    username, email, password, password_confirm = info_user
+    username, email, password, password_confirm, name, type_user = info_user
     try:
-        usr = User(username, email, password)
+        usr = User(username, email, password, name, type_user)
         db.session.add(usr)
         db.session.commit()
         return True

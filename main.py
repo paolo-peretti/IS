@@ -151,10 +151,17 @@ def register():
 
         username = request.form["username"]
         email = request.form["email"]
+        name = request.form["name"]
         password = request.form["password"]
         password_confirm = request.form["confirm_password"]
 
-        info_user = [username, email, password, password_confirm]
+        try:
+            type_user = request.form['type_user']
+        except Exception:
+            print('something went wrong')
+            type_user='searcher'
+
+        info_user = [username, email, password, password_confirm, name, type_user]
 
         msg, user = check_registration_info(info_user)
 
