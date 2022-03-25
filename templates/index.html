@@ -109,15 +109,15 @@
 
 
 
-          {% if usr != undefined %}
+          {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="#">{{usr}}</a>
+              <a class="nav-link" href="#">{{current_user.username}}</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/logout">Log out</a>
             </li>
-          {% endif %}
-          {% if usr == undefined %}
+
+          {% else %}
             <li class="nav-item">
               <a class="nav-link" href="/login">Sign In</a>
             </li>
@@ -151,7 +151,9 @@
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       {% for msg in messages %}
-        <p>{{msg}}</p>
+        <div class="alert alert-info" role="alert">
+            {{msg}}
+        </div>
       {% endfor %}
     {% endif %}
   {% endwith %}

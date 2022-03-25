@@ -1,4 +1,3 @@
-from functools import wraps
 
 from flask import render_template, request, session, flash, url_for, redirect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -12,6 +11,9 @@ from models import User
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+login_manager.session_protection = "strong"
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -71,18 +73,20 @@ def index():
         search_query = [district, type_room, min_price, max_price, features]
         items = get_listings(search_query)
 
-        if "user" in session:
-            user = session["user"]
-            return render_template('index.html', usr=user, items=items, all_districts=all_districts)
+        # print(current_user.is_authenticated)
+
+        # if "user" in session:
+        #     user = session["user"]
+        #     return render_template('index.html', usr=user, items=items, all_districts=all_districts)
 
         return render_template('index.html', items=items, all_districts=all_districts)
 
 
     else:
 
-        if "user" in session:
-            user = session["user"]
-            return render_template('index.html', usr=user, all_districts=all_districts)
+        # if "user" in session:
+        #     user = session["user"]
+        #     return render_template('index.html', usr=user, all_districts=all_districts)
 
 
         return render_template('index.html', all_districts=all_districts)
@@ -102,10 +106,11 @@ def send_message(id_owner):
 
         print(id_owner)
 
-        if "user" in session:
-            user = session["user"]
-            print(user)
-            return render_template('send_message.html', usr=user)
+        # if "user" in session:
+        #     user = session["user"]
+        #     print(user)
+
+        return render_template('send_message.html', id_owner=id_owner)
 
         # return redirect(url_for("login"))
 
@@ -118,15 +123,17 @@ def send_message(id_owner):
 def login():
 
     if request.method == 'POST':
+
         username = request.form["username"]
         password = request.form["password"]
 
         msg, user = check_auth([username, password])
 
         if msg == '':
-            session["user"] = username
+            # session["user"] = username
 
             login_user(user)
+
 
             return redirect(url_for("index"))
         else:
@@ -149,15 +156,20 @@ def register():
 
         info_user = [username, email, password, password_confirm]
 
-        msg = check_registration_info(info_user)
+        msg, user = check_registration_info(info_user)
 
         if msg == '':
             status = add_user(info_user)
             if status:
-                session["user"] = username
+                session["user"] = user
 
                 flash('Welcome! You have registered successfully!', 'info')
-                return redirect(url_for("index"))
+
+                # sending a 307 status code instead of 302 should tell the browser to preserve the used HTTP method
+                # and thus have the behaviour you're expecting. Your call to redirect would then look like this:
+
+                return redirect(url_for('login'), code=307)
+                # return redirect(url_for("index"))
             else:
                 flash('Something went wrong, please try again.', 'error')
                 return render_template('login.html', type='signUp')
@@ -177,7 +189,7 @@ def register():
 @login_required
 def logout():
     # print(current_user)
-    session.pop("user", None)
+    # session.pop("user", None)
     logout_user()
     return redirect(url_for("index"))
 

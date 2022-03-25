@@ -190,7 +190,7 @@ def check_registration_info(info_user):
             if found_user:
                 msg = 'This email is already in use.'
 
-    return msg
+    return msg, found_user
 
 
 def add_user(info_user):
