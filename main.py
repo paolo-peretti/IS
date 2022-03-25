@@ -161,7 +161,7 @@ def register():
         if msg == '':
             status = add_user(info_user)
             if status:
-                session["user"] = user
+                # session["user"] = user
 
                 flash('Welcome! You have registered successfully!', 'info')
 
