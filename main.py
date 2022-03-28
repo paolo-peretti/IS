@@ -106,15 +106,49 @@ def send_message(id_owner):
 
         print(id_owner)
 
-        # if "user" in session:
-        #     user = session["user"]
-        #     print(user)
 
         return render_template('send_message.html', id_owner=id_owner)
 
+
+
+
+@app.route('/update_user_informations/<id>', methods=['POST', 'GET'])
+@login_required
+def update_user_informations(id):
+    # print(id_owner)
+
+    if request.method == 'POST':
+        pass
+
+    else:
+
+        pass
+
         # return redirect(url_for("login"))
 
+@app.route('/chats/<id>', methods=['POST', 'GET'])
+@login_required
+def chats(id):
+    # print(id_owner)
 
+    if request.method == 'POST':
+        pass
+
+    else:
+
+        pass
+
+@app.route('/my_listings/<id>', methods=['POST', 'GET'])
+@login_required
+def my_listings(id):
+    # print(id_owner)
+
+    if request.method == 'POST':
+        pass
+
+    else:
+
+        pass
 
 
 
