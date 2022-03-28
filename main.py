@@ -4,9 +4,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from extensions import app, db
 from utils import *
-from models import User
-
-
+from models import User, Message
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -100,12 +98,22 @@ def send_message(id_owner):
     # print(id_owner)
 
     if request.method == 'POST':
-        pass
+        print('message')
+        message = request.form["message"]
+        if message != '':
+
+            msg = Message(current_user.id, id_owner, message)
+            db.session.add(msg)
+            db.session.commit()
+
+            flash('You sent the message successfully!', 'message')
+            return redirect(url_for("index"))
+
+        else:
+            flash('You have to write something to send a message!', 'message')
+            return render_template('send_message.html', id_owner=id_owner)
 
     else:
-
-        print(id_owner)
-
 
         return render_template('send_message.html', id_owner=id_owner)
 
