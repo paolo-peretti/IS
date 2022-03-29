@@ -1,3 +1,4 @@
+import ast
 
 from flask import render_template, request, session, flash, url_for, redirect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -134,14 +135,39 @@ def update_user_informations():
 
         # return redirect(url_for("login"))
 
-@app.route('/chats', methods=['GET'])
+@app.route('/chats/<interlocutor>', methods=['POST', 'GET'])
 @login_required
-def chats():
+def chats(interlocutor):
 
-    messages = get_my_chats(current_user)
-    # print(messages)
+    if request.method == 'POST':
 
-    return render_template('chats.html', chats=messages)
+        print(interlocutor)
+        message = request.form["message"]
+        print(message)
+
+
+        return render_template('chats.html', chats=['messages'], current_interlocutor=interlocutor)
+
+    else:
+
+        if interlocutor == 'none':
+
+            messages = get_my_chats(current_user)
+            session["messages"] = messages
+            try:
+                interlocutor = list(messages.keys())[0]
+            except Exception:
+                interlocutor = 'none'
+
+        else:
+            if "messages" in session:
+                messages = session["messages"]
+            else:
+                session["messages"] = get_my_chats(current_user)
+
+
+
+        return render_template('chats.html', chats=messages, current_interlocutor=interlocutor)
 
 
 
@@ -237,7 +263,7 @@ def register():
 @login_required
 def logout():
     # print(current_user)
-    # session.pop("user", None)
+    session.pop("messages", None)
     logout_user()
     return redirect(url_for("index"))
 

@@ -213,7 +213,8 @@ def get_my_chats(current_user):
     query = 'SELECT "user1_ID", "user2_ID", message FROM public.messages WHERE messages."user1_ID"='
     query += "'" + str(current_user.id) + "'"
     query += 'or messages."user2_ID"='
-    query += "'" + str(current_user.id) + "'; "
+    query += "'" + str(current_user.id) + "' "
+    # query += 'ORDER BY messages."message_ID" DESC; '
 
     result_query = db.engine.execute(query)
 
@@ -238,9 +239,11 @@ def get_my_chats(current_user):
         else:
             interlocutor_name = interlocutors[interlocutor_id]
 
-        chats.setdefault(interlocutor_name, []).append(msg)
+        chats.setdefault(interlocutor_name, []).append((int(msg[0]),int(msg[1]),msg[2]))
 
 
 
 
     return chats
+
+

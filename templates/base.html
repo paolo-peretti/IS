@@ -120,7 +120,7 @@
               <a class="nav-link" href="{{ url_for('update_user_informations') }}">Update My Informations</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('chats') }}">My Chats</a>
+              <a class="nav-link" href="{{ url_for('chats', interlocutor='none') }}">My Chats</a>
             </li>
           {% if current_user.type_user == "renter" %}
             <li class="nav-item">

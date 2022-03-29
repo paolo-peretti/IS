@@ -1,46 +1,130 @@
 {% extends "base.html" %}
 
+
+
 {% block content %}
 
-
-
-<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#f4f2f4;">
-
-    {% if chats != undefined and chats != {} %}
-        <div style="padding:0.1%;">
-
-            <h1 style="margin-left:10%;margin-top:5%;">My Chats: </h1>
-            <div style="margin-bottom:30px;"></div>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chats.css') }}">
 
 
 
 
-        {% for interlocutor in chats.keys() %}
+{% if chats != {} %}
 
 
-            <hr>
 
-            <div class="row" style="margin-bottom:30px;margin-top:30px;width:50%;margin-left:25%;margin-right:25%;">
+            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
-                <div class="col-md-4" >
-                    <label>Chat with {{interlocutor}}:</label>
+            <div class="container" style="margin-top:30px;">
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card chat-app">
+                        <div id="plist" class="people-list">
+                            <label>Chats: </label>
 
+                            <ul class="list-unstyled chat-list mt-2 mb-0">
+
+
+                                {% for interlocutor in chats.keys() %}
+
+                                    <li class="clearfix">
+
+
+                                        <div class="about">
+                                            <div class="name">
+                                                <a href="{{ url_for('chats',interlocutor=interlocutor) }}"  class="btn btn-primary" style="background:#EFEFEF;color:black;">{{ interlocutor }}</a>
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </li>
+
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+
+
+
+                        <div class="chat" >
+                            <div class="chat-header clearfix">
+                                <div class="row">
+                                    <div class="col-lg-6">
+
+                                        <div class="chat-about">
+                                            <h6 class="m-b-0">{{ current_interlocutor }}</h6>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="chat-history">
+                                <ul class="m-b-0">
+
+                                    {% for message in chats[current_interlocutor]%}
+
+                                        {% if message[0] != current_user.id %}
+
+                                            <li class="clearfix">
+
+                                                <div class="message my-message"> {{message[2]}} </div>
+                                            </li>
+
+
+                                        {% else %}
+
+                                            <li class="clearfix">
+
+                                                <div class="message other-message float-right"> {{message[2]}} </div>
+                                            </li>
+
+                                        {% endif %}
+                                    {% endfor%}
+
+                                </ul>
+                            </div>
+
+
+                            <form action="#" method="post">
+                                <div class="chat-message clearfix">
+                                    <div class="input-group mb-0">
+
+
+                                            <div class="col-xl" >
+                                                <input type="text" class="form-control" placeholder="Enter text here..." name="message"></div>
+                                            <div class="col-sm-2">
+                                                <button class="btn btn-secondary btn-block" >Send</button>
+                                            </div>
+
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+
+                    </div>
                 </div>
-
-                <a href="{{ url_for('chats') }}"  class="btn btn-primary" style="background:#EFEFEF;color:black;">{{interlocutor}}</a>
-
             </div>
-            <hr>
+            </div>
 
-        {% endfor %}
+
+
+
 
     {% else %}
 
-        <div style="margin-right: 20%;margin-left:20%;color:red;">
-            <h3 >No chats available!</h3>
-        </div>
+            <div style="margin-right: 20%;margin-left:20%;color:red;">
+                <h3 >No chats available!</h3>
+            </div>
 
-    {% endif %}
+{% endif %}
+
+
 
     </div>
 </div>
