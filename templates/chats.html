@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% for chat in chats %}
+        <div>
+            <label> {{chat}} </label>
+
+        </div>
+      {% endfor %}
+
+{% endblock %}

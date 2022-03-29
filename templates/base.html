@@ -117,14 +117,14 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('update_user_informations',id=current_user.id) }}">Update My Informations</a>
+              <a class="nav-link" href="{{ url_for('update_user_informations') }}">Update My Informations</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('chats',id=current_user.id) }}">My Chats</a>
+              <a class="nav-link" href="{{ url_for('chats') }}">My Chats</a>
             </li>
           {% if current_user.type_user == "renter" %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('my_listings',id=current_user.id) }}">My Listings</a>
+              <a class="nav-link" href="{{ url_for('my_listings') }}">My Listings</a>
             </li>
 
           {% endif %}

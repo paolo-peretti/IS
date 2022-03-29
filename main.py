@@ -98,7 +98,7 @@ def send_message(id_owner):
     # print(id_owner)
 
     if request.method == 'POST':
-        print('message')
+        # print('message')
         message = request.form["message"]
         if message != '':
 
@@ -120,9 +120,9 @@ def send_message(id_owner):
 
 
 
-@app.route('/update_user_informations/<id>', methods=['POST', 'GET'])
+@app.route('/update_user_informations', methods=['POST', 'GET'])
 @login_required
-def update_user_informations(id):
+def update_user_informations():
     # print(id_owner)
 
     if request.method == 'POST':
@@ -134,21 +134,20 @@ def update_user_informations(id):
 
         # return redirect(url_for("login"))
 
-@app.route('/chats/<id>', methods=['POST', 'GET'])
+@app.route('/chats', methods=['GET'])
 @login_required
-def chats(id):
-    # print(id_owner)
+def chats():
 
-    if request.method == 'POST':
-        pass
+    messages = get_my_chats(current_user)
+    print(messages)
 
-    else:
+    return render_template('chats.html', chats=messages)
 
-        pass
 
-@app.route('/my_listings/<id>', methods=['POST', 'GET'])
+
+@app.route('/my_listings', methods=['POST', 'GET'])
 @login_required
-def my_listings(id):
+def my_listings():
     # print(id_owner)
 
     if request.method == 'POST':

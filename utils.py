@@ -205,3 +205,42 @@ def add_user(info_user):
         return True
     except Exception:
         return False
+
+
+
+def get_my_chats(current_user):
+
+    query = 'SELECT "user1_ID", "user2_ID", message FROM public.messages WHERE messages."user1_ID"='
+    query += "'" + str(current_user.id) + "'"
+    query += 'or messages."user2_ID"='
+    query += "'" + str(current_user.id) + "'; "
+
+    result_query = db.engine.execute(query)
+
+    messages = result_query.fetchall()
+
+    chats = {}
+    interlocutors = {}
+
+    for msg in messages:
+        if str(msg[0]) != str(current_user.id):
+            interlocutor_id = msg[0]
+        else:
+            interlocutor_id = msg[1]
+
+        if interlocutor_id not in interlocutors.keys():
+
+            query = "SELECT username FROM public.users WHERE id='"+str(interlocutor_id)+"'"
+            result_query = db.engine.execute(query)
+            interlocutor_name = result_query.fetchone()[0]
+
+            interlocutors[interlocutor_id] = interlocutor_name
+        else:
+            interlocutor_name = interlocutors[interlocutor_id]
+
+        chats.setdefault(interlocutor_name, []).append(msg)
+
+
+
+
+    return chats
