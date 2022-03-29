@@ -131,7 +131,7 @@ def chats(interlocutor):
                     db.session.add(msg)
                     db.session.commit()
 
-                    flash('You sent the message successfully!', 'message')
+
                 except Exception:
                     flash('Something went wrong! Please try again later.', 'message')
             else:
