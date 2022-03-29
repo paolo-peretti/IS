@@ -93,31 +93,6 @@ def index():
 
 
 
-@app.route('/send_message/<id_owner>', methods=['POST', 'GET'])
-@login_required
-def send_message(id_owner):
-    # print(id_owner)
-
-    if request.method == 'POST':
-        # print('message')
-        message = request.form["message"]
-        if message != '':
-
-            msg = Message(current_user.id, id_owner, message)
-            db.session.add(msg)
-            db.session.commit()
-
-            flash('You sent the message successfully!', 'message')
-            return redirect(url_for("index"))
-
-        else:
-            flash('You have to write something to send a message!', 'message')
-            return render_template('send_message.html', id_owner=id_owner)
-
-    else:
-
-        return render_template('send_message.html', id_owner=id_owner)
-
 
 
 
@@ -141,29 +116,78 @@ def chats(interlocutor):
 
     if request.method == 'POST':
 
-        print(interlocutor)
+
         message = request.form["message"]
-        print(message)
+        interlocutor = request.form["interlocutor"]
 
 
-        return render_template('chats.html', chats=['messages'], current_interlocutor=interlocutor)
+        if message != '':
+
+            owner = User.query.filter_by(username=interlocutor).first()
+
+            if owner:
+                try:
+                    msg = Message(current_user.id, owner.id, message)
+                    db.session.add(msg)
+                    db.session.commit()
+
+                    flash('You sent the message successfully!', 'message')
+                except Exception:
+                    flash('Something went wrong! Please try again later.', 'message')
+            else:
+                flash('Something went wrong! Please try again later.', 'message')
+
+        else:
+
+            flash('You have to write something to send a message!', 'message')
+
+
+        messages = get_my_chats(current_user)
+        session["messages"] = messages
+
+
+        return render_template('chats.html', chats=messages, current_interlocutor=interlocutor)
+
+
+
 
     else:
 
+
+
+
         if interlocutor == 'none':
 
-            messages = get_my_chats(current_user)
-            session["messages"] = messages
+            if "messages" in session:
+                messages = session["messages"]
+            else:
+                messages = get_my_chats(current_user)
+                session["messages"] = messages
+
             try:
                 interlocutor = list(messages.keys())[0]
             except Exception:
                 interlocutor = 'none'
 
+
         else:
+
+            try:
+                if isinstance(int(interlocutor), int):
+
+                    id_owner = int(interlocutor)
+                    owner = User.query.filter_by(id=id_owner).first()
+                    if owner:
+                        interlocutor = owner.username
+
+            except Exception:
+                pass
+
             if "messages" in session:
                 messages = session["messages"]
             else:
-                session["messages"] = get_my_chats(current_user)
+                messages = get_my_chats(current_user)
+                session["messages"] = messages
 
 
 
