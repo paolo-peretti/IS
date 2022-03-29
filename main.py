@@ -139,7 +139,7 @@ def update_user_informations():
 def chats():
 
     messages = get_my_chats(current_user)
-    print(messages)
+    # print(messages)
 
     return render_template('chats.html', chats=messages)
 

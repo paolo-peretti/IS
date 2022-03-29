@@ -2,11 +2,52 @@
 
 {% block content %}
 
-    {% for chat in chats %}
-        <div>
-            <label> {{chat}} </label>
 
+
+<div id="search-box" style="margin-top:20px;margin-left:10%;margin-right:10%;margin-bottom:20px;background:#f4f2f4;">
+
+    {% if chats != undefined and chats != {} %}
+        <div style="padding:0.1%;">
+
+            <h1 style="margin-left:10%;margin-top:5%;">My Chats: </h1>
+            <div style="margin-bottom:30px;"></div>
+
+
+
+
+        {% for interlocutor in chats.keys() %}
+
+
+            <hr>
+
+            <div class="row" style="margin-bottom:30px;margin-top:30px;width:50%;margin-left:25%;margin-right:25%;">
+
+                <div class="col-md-4" >
+                    <label>Chat with {{interlocutor}}:</label>
+
+                </div>
+
+                <a href="{{ url_for('chats') }}"  class="btn btn-primary" style="background:#EFEFEF;color:black;">{{interlocutor}}</a>
+
+            </div>
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div style="margin-right: 20%;margin-left:20%;color:red;">
+            <h3 >No chats available!</h3>
         </div>
-      {% endfor %}
+
+    {% endif %}
+
+    </div>
+</div>
+
+
+
+
+
 
 {% endblock %}
