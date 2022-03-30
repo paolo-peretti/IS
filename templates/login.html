@@ -146,7 +146,11 @@
 				{% with messages = get_flashed_messages() %}
 					{% if messages %}
 						{% for msg in messages %}
-							<p style="color:red;">{{msg}}</p>
+					<div class="alert alert-danger" role="alert">
+  						{{msg}}
+					</div>
+
+
 						{% endfor %}
 					{% endif %}
 				{% endwith %}
@@ -298,8 +302,6 @@
 <!--	</div>-->
 <!--</div>-->
 </div>
-{% endif %}
-
 
 {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -310,5 +312,11 @@
       {% endfor %}
     {% endif %}
   {% endwith %}
+
+
+{% endif %}
+
+
+
 
 {% endblock %}
