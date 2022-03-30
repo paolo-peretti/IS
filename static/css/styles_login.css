@@ -2,17 +2,12 @@
 
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
-html,body{
-background-image: url('https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8bGl2aW5nJTIwcm9vbXxlbnwwfHwwfHw%3D&w=1000&q=80');
-background-size: cover;
-background-repeat: no-repeat;
-height: 100%;
-font-family: 'Numans', sans-serif;
-}
+
 
 .container{
 height: 100%;
 align-content: center;
+margin-top:40px;
 }
 
 .card{

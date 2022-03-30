@@ -106,9 +106,11 @@ def update_user_informations():
 
     else:
 
+        # return render_template('login.html', all_districts=all_districts)
         pass
 
-        # return redirect(url_for("login"))
+
+
 
 @app.route('/chats/<interlocutor>', methods=['POST', 'GET'])
 @login_required
