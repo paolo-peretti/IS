@@ -9,14 +9,17 @@
 
 
 
-{% if chats != {} %}
+
 
 
 
             <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
             <div class="container" style="margin-top:30px;">
-            <div class="row clearfix">
+
+                {% if test_chats %}
+
+                    <div class="row clearfix">
                 <div class="col-lg-12">
                     <div class="card chat-app">
                         <div id="plist" class="people-list">
@@ -57,6 +60,7 @@
                                             <h6 class="m-b-0">{{ current_interlocutor }}</h6>
 
                                         </div>
+
                                     </div>
 
                                 </div>
@@ -127,19 +131,27 @@
                     </div>
                 </div>
             </div>
+
+                {% else %}
+
+                    <div style="margin-right: 20%;margin-left:20%;color:red;">
+                            <h3 >No chats available!</h3>
+                        </div>
+                {% endif %}
+
             </div>
 
 
 
 
 
-    {% else %}
+    {% if interlocutor %}
 
             <div style="margin-right: 20%;margin-left:20%;color:red;">
                 <h3 >No chats available!</h3>
             </div>
 
-{% endif %}
+    {% endif %}
 
 
 

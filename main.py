@@ -146,15 +146,14 @@ def chats(interlocutor):
         session["messages"] = messages
 
 
-        return render_template('chats.html', chats=messages, current_interlocutor=interlocutor)
+        return render_template('chats.html', chats=messages, current_interlocutor=interlocutor, test_chats=True)
 
 
 
 
     else:
 
-
-
+        test_chats = True
 
         if interlocutor == 'none':
 
@@ -167,7 +166,7 @@ def chats(interlocutor):
             try:
                 interlocutor = list(messages.keys())[0]
             except Exception:
-                interlocutor = 'none'
+                test_chats=False
 
 
         else:
@@ -191,7 +190,7 @@ def chats(interlocutor):
 
 
 
-        return render_template('chats.html', chats=messages, current_interlocutor=interlocutor)
+        return render_template('chats.html', chats=messages, current_interlocutor=interlocutor, test_chats=test_chats)
 
 
 
