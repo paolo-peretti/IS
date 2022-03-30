@@ -1,3 +1,5 @@
+from cryptography.fernet import Fernet
+
 from models import User, Listing
 from extensions import db
 import re
@@ -135,9 +137,32 @@ def get_listings(search_query):
 
 def decoding_password(password):
 
+    key_pass = 'NyaskKIJZz-Y0cIV0g38qB0UWi_1T7SuG3nTUfhrjbU='
+    key_pass = key_pass.encode()
+
+    password = password.encode()
+
+    dencryption_pass = Fernet(key_pass)
+
+    password = dencryption_pass.decrypt(password).decode()
+
     return password
 
+
+
 def encoding_password(password):
+
+    key_pass = 'NyaskKIJZz-Y0cIV0g38qB0UWi_1T7SuG3nTUfhrjbU='
+    key_pass = key_pass.encode()
+
+    print(key_pass)
+
+    encryption_type_pass = Fernet(key_pass)
+
+    print(encryption_type_pass)
+
+    password = encryption_type_pass.encrypt(password.encode()).decode()
+
     return password
 
 
@@ -147,9 +172,8 @@ def check_email(email):
     return re.fullmatch(regex, email)
 
 
-def check_auth(info_user):
+def check_auth(username, password):
 
-    username, password = info_user
     msg = ''
     if username == '':
         msg = 'Missing username.'
@@ -158,13 +182,12 @@ def check_auth(info_user):
     else:
         found_user = User.query.filter_by(username=username).first()
         if found_user:
-            password = decoding_password(found_user.password)
-            if found_user.password != password:
+            if decoding_password(found_user.password) != password:
                 msg = 'This password is incorrect!'
         else:
             msg = 'This username is not found. Please check you have written it correctly.'
 
-    return msg
+    return msg, found_user
 
 
 def check_registration_info(info_user):
@@ -199,19 +222,20 @@ def check_update_info(info_user, current_user):
 
     username, email, name, type_user = info_user
     msg = ''
-    elements_to_update = []
+    elements_to_update = {}
+
 
     if username != '' and current_user.username != username:
-        elements_to_update.append('username')
-    if email != '' or current_user.email != email:
-        elements_to_update.append('email')
-    if name != '' or current_user.name != name:
-        elements_to_update.append('name')
+        elements_to_update['username'] = username
+    if email != '' and current_user.email != email:
+        elements_to_update['email'] = email
+    if name != '' and current_user.name != name:
+        elements_to_update['name'] = name
     if current_user.type_user != type_user:
-        elements_to_update.append('type_user')
+        elements_to_update['type_user'] = type_user
 
 
-    if len(elements_to_update) > 0:
+    if len(list(elements_to_update.keys())) > 0:
 
 
         if check_email(email) == False:
@@ -235,14 +259,58 @@ def check_update_info(info_user, current_user):
 
     return msg, elements_to_update
 
+def check_password_update(info_user, current_user):
+
+    old_password, password, password_confirm = info_user
+
+    msg = ''
+    elements_to_update = {}
+
+    if password != password_confirm:
+        msg = 'The password does not match with the password confirmation!'
+    elif password == '':
+        msg = 'You have to write something to the password.'
+    elif decoding_password(current_user.password) != old_password:
+        msg = 'The old password you entered is incorrect.'
+    else:
+        elements_to_update['password'] = encoding_password(password)
+
+    return msg, elements_to_update
+
 
 
 def add_user(info_user):
 
     username, email, password, password_confirm, name, type_user = info_user
     try:
-        usr = User(username, email, password, name, type_user)
+        usr = User(username, email, encoding_password(password), name, type_user)
         db.session.add(usr)
+        db.session.commit()
+        return True
+    except Exception:
+        return False
+
+
+
+def update_user(elements_to_update, current_user):
+
+
+    try:
+        user = User.query.filter_by(id=current_user.id).first()
+
+
+        if 'username' in list(elements_to_update.keys()):
+            user.username = elements_to_update['username']
+        if 'email' in list(elements_to_update.keys()):
+            user.email = elements_to_update['email']
+        if 'name' in list(elements_to_update.keys()):
+            user.name = elements_to_update['name']
+        if 'type_user' in list(elements_to_update.keys()):
+            user.type_user = elements_to_update['type_user']
+
+        if 'password' in list(elements_to_update.keys()):
+            user.password = elements_to_update['password']
+
         db.session.commit()
         return True
     except Exception:

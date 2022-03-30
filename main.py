@@ -137,8 +137,7 @@ def update_user_informations():
 
 
         if check_info:
-            print('info_user')
-            print(username, email, name, type_user)
+
 
             info_user = [username, email, name, type_user]
 
@@ -146,48 +145,45 @@ def update_user_informations():
 
             if msg == '':
 
-                status = add_user(info_user)
+                status = update_user(elements_to_update, current_user)
 
                 if status:
-                    # session["user"] = user
-
-                    flash('Welcome! You have registered successfully!', 'info')
-
-                    # sending a 307 status code instead of 302 should tell the browser to preserve the used HTTP method
-                    # and thus have the behaviour you're expecting. Your call to redirect would then look like this:
-
-                    return redirect(url_for('login'), code=307)
-                    # return redirect(url_for("index"))
+                    flash('You have update your informations successfully!', 'info')
                 else:
                     flash('Something went wrong, please try again.', 'error')
-                    return render_template('login.html', type='update')
+
             else:
+
                 flash(msg, 'message')
-                return render_template('login.html', type='update')
+
+
+            return render_template('login.html', type='update')
 
 
         if check_pass:
 
-            print(old_password, password, password_confirm)
             info_user = [old_password, password, password_confirm]
-            msg, user = check_registration_info(info_user)
+
+            msg, elements_to_update = check_password_update(info_user, current_user)
 
             if msg == '':
-                status = add_user(info_user)
+
+                status = update_user(elements_to_update, current_user)
+
                 if status:
-                    # session["user"] = user
 
-                    flash('Welcome! You have registered successfully!', 'info')
+                    flash('You have update your password successfully!', 'info')
 
-
-                    return redirect(url_for('login'), code=307)
-                    # return redirect(url_for("index"))
                 else:
+
                     flash('Something went wrong, please try again.', 'error')
-                    return render_template('login.html', type='update')
+
             else:
+
                 flash(msg, 'message')
-                return render_template('login.html', type='update')
+
+
+            return render_template('login.html', type='update')
 
 
 
@@ -310,7 +306,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        msg, user = check_auth([username, password])
+        msg, user = check_auth(username, password)
 
         if msg == '':
             # session["user"] = username
