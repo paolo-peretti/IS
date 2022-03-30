@@ -164,7 +164,7 @@ def check_auth(info_user):
         else:
             msg = 'This username is not found. Please check you have written it correctly.'
 
-    return msg, found_user
+    return msg
 
 
 def check_registration_info(info_user):
@@ -192,7 +192,49 @@ def check_registration_info(info_user):
             if found_user:
                 msg = 'This email is already in use.'
 
-    return msg, found_user
+    return msg
+
+
+def check_update_info(info_user, current_user):
+
+    username, email, name, type_user = info_user
+    msg = ''
+    elements_to_update = []
+
+    if username != '' and current_user.username != username:
+        elements_to_update.append('username')
+    if email != '' or current_user.email != email:
+        elements_to_update.append('email')
+    if name != '' or current_user.name != name:
+        elements_to_update.append('name')
+    if current_user.type_user != type_user:
+        elements_to_update.append('type_user')
+
+
+    if len(elements_to_update) > 0:
+
+
+        if check_email(email) == False:
+
+            msg = 'This is not a valid email address. Please try again.'
+
+        else:
+
+            found_user = User.query.filter_by(username=username).first()
+
+            if found_user:
+                msg = 'This username already exists. Please choose another username.'
+            else:
+                found_user = User.query.filter_by(email=email).first()
+                if found_user:
+                    msg = 'This email is already in use.'
+
+    else:
+
+        msg = 'You have not changed anything. '
+
+    return msg, elements_to_update
+
 
 
 def add_user(info_user):

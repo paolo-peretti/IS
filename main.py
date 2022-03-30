@@ -99,15 +99,106 @@ def index():
 @app.route('/update_user_informations', methods=['POST', 'GET'])
 @login_required
 def update_user_informations():
-    # print(id_owner)
 
     if request.method == 'POST':
-        pass
+
+
+        try:
+
+            username = request.form["username"]
+            email = request.form["email"]
+            name = request.form["name"]
+
+            try:
+                type_user = request.form['type_user']
+            except Exception:
+                print('something went wrong')
+                type_user = 'searcher'
+
+            check_info = True
+
+        except Exception:
+
+            check_info = False
+
+
+
+        try:
+
+            old_password = request.form["old_password"]
+            password = request.form["password"]
+            password_confirm = request.form["confirm_password"]
+
+            check_pass = True
+
+        except Exception:
+
+            check_pass = False
+
+
+        if check_info:
+            print('info_user')
+            print(username, email, name, type_user)
+
+            info_user = [username, email, name, type_user]
+
+            msg, elements_to_update = check_update_info(info_user, current_user)
+
+            if msg == '':
+
+                status = add_user(info_user)
+
+                if status:
+                    # session["user"] = user
+
+                    flash('Welcome! You have registered successfully!', 'info')
+
+                    # sending a 307 status code instead of 302 should tell the browser to preserve the used HTTP method
+                    # and thus have the behaviour you're expecting. Your call to redirect would then look like this:
+
+                    return redirect(url_for('login'), code=307)
+                    # return redirect(url_for("index"))
+                else:
+                    flash('Something went wrong, please try again.', 'error')
+                    return render_template('login.html', type='update')
+            else:
+                flash(msg, 'message')
+                return render_template('login.html', type='update')
+
+
+        if check_pass:
+
+            print(old_password, password, password_confirm)
+            info_user = [old_password, password, password_confirm]
+            msg, user = check_registration_info(info_user)
+
+            if msg == '':
+                status = add_user(info_user)
+                if status:
+                    # session["user"] = user
+
+                    flash('Welcome! You have registered successfully!', 'info')
+
+
+                    return redirect(url_for('login'), code=307)
+                    # return redirect(url_for("index"))
+                else:
+                    flash('Something went wrong, please try again.', 'error')
+                    return render_template('login.html', type='update')
+            else:
+                flash(msg, 'message')
+                return render_template('login.html', type='update')
+
+
+
+        flash('Something went wrong, please try again.', 'error')
+        return render_template('login.html', type='update')
+
+
 
     else:
 
-        # return render_template('login.html', all_districts=all_districts)
-        pass
+        return render_template('login.html', type='update')
 
 
 
@@ -255,12 +346,12 @@ def register():
 
         info_user = [username, email, password, password_confirm, name, type_user]
 
-        msg, user = check_registration_info(info_user)
+        msg = check_registration_info(info_user)
 
         if msg == '':
             status = add_user(info_user)
             if status:
-                # session["user"] = user
+
 
                 flash('Welcome! You have registered successfully!', 'info')
 
