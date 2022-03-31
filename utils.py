@@ -23,6 +23,47 @@ def get_feature_value(request, feature):
         return ''
 
 
+def get_my_listings(current_user):
+
+    query = "SELECT * FROM listings "
+    query += 'WHERE '
+    query += "listings.owner_id = '" + str(current_user.id) + "' "
+
+    result_query = db.engine.execute(query)
+    listings = result_query.fetchall()
+
+    listings_with_images = []
+
+    for listing in listings:
+        random_image_index = random.randrange(len(all_images))
+        listings_with_images.append((listing, all_images[random_image_index]))
+
+
+    return listings_with_images
+
+
+
+def delete_my_listings(listing_id):
+
+    try:
+
+
+        query = "DELETE FROM listings "
+        query += 'WHERE '
+        query += 'listings."house_ID" = '
+        query += "'" + str(listing_id) + "' "
+
+        db.engine.execute(query)
+        db.session.commit()
+
+        return True
+    except Exception:
+        return False
+
+
+def add_a_listing(search_query, current_user_id):
+    pass
+
 
 def get_listings(search_query):
 
@@ -258,6 +299,9 @@ def check_update_info(info_user, current_user):
         msg = 'You have not changed anything. '
 
     return msg, elements_to_update
+
+
+
 
 def check_password_update(info_user, current_user):
 

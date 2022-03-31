@@ -4,7 +4,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from extensions import app, db
 from utils import *
-from models import User, Message
+from models import User, Message, Listing
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -282,17 +282,107 @@ def chats(interlocutor):
 
 
 
-@app.route('/my_listings', methods=['POST', 'GET'])
+@app.route('/my_listings', methods=['GET'])
 @login_required
 def my_listings():
-    # print(id_owner)
+
+    listings = get_my_listings(current_user)
+    return render_template('my_listings.html', items=listings)
+
+
+
+@app.route('/delete_listings/<listing_id>')
+@login_required
+def delete_listings(listing_id):
+
+    if delete_my_listings(listing_id):
+        flash('This listing is deleted successfully!', 'info')
+    else:
+        flash('Something went wrong, please try again.', 'error')
+
+
+    listings = get_my_listings(current_user)
+
+    return render_template('my_listings.html', items=listings)
+
+
+@app.route('/add_listing', methods=['POST', 'GET'])
+@login_required
+def add_listing():
 
     if request.method == 'POST':
-        pass
+
+
+        district = request.form["district"]
+
+        price = request.form["price"]
+
+
+        if district not in all_districts:
+            district = ''
+
+        # features
+        features = []
+        try:
+            bathroom = request.form["bathroom"]  # private bathroom or shared bathroom
+            features.append(bathroom)
+        except Exception:
+            bathroom = ''
+        try:
+            furnished = request.form['furnished']
+            if 'yes' in furnished:
+                features.append('furnished')
+        except Exception:
+            furnished = ''
+
+        # features
+
+        for feature in all_features_with_checkbox:
+            value = get_feature_value(request, feature)
+            if value != '':
+                features.append(value)
+
+
+        # type_room
+
+        types = []
+
+        for type_room in room_types:
+            value = get_feature_value(request, type_room)
+            if value != '':
+                types.append(value)
+
+
+        search_query = [district, types, price, features]
+
+
+
+        if add_a_listing(search_query, current_user.id):
+            flash('The listing is added successfully!', 'info')
+        else:
+            flash('Something went wrong, please try again.', 'error')
+            return render_template('add_listing.html', all_districts=all_districts)
+
+
+        listings = get_my_listings(current_user)
+
+        return render_template('my_listings.html', items=listings)
 
     else:
 
-        pass
+
+        return render_template('add_listing.html', all_districts=all_districts)
+
+
+
+
+@app.route('/update_listing/<listing_id>', methods=['POST', 'GET'])
+@login_required
+def update_listing(listing_id):
+
+    listings = get_my_listings(current_user)
+
+    return render_template('my_listings.html', items=listings)
 
 
 
