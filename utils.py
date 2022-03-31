@@ -1,3 +1,4 @@
+
 from cryptography.fernet import Fernet
 
 from models import User, Listing
@@ -47,7 +48,6 @@ def delete_my_listings(listing_id):
 
     try:
 
-
         query = "DELETE FROM listings "
         query += 'WHERE '
         query += 'listings."house_ID" = '
@@ -61,12 +61,45 @@ def delete_my_listings(listing_id):
         return False
 
 
-def add_a_listing(search_query, current_user_id):
-    pass
 
+
+
+
+def add_a_listing(search_query, current_user_id):
+
+    address, district, types_str, price, features_str = search_query
+
+    try:
+        listing = Listing(address, district, types_str, price, features_str, current_user_id)
+        db.session.add(listing)
+        db.session.commit()
+        return True
+    except Exception:
+        return False
+
+
+def msg_adding_listing(search_query):
+
+    address, district, types_str, price, features_str = search_query
+
+    msg=''
+
+    if address == '':
+        msg = 'You have to specify an address!'
+    elif district == '':
+        msg = 'You have to specify a district!'
+    elif types_str == '':
+        msg = 'You have to choose the types of availability for the house!'
+    else:
+        try:
+            if isinstance(int(price), int):
+                msg = ''
+        except Exception:
+            msg = 'You have to put a valid value for the price!'
+
+    return msg
 
 def get_listings(search_query):
-
 
 
     # search_query = [district, type_room, min, max, features]
@@ -196,11 +229,9 @@ def encoding_password(password):
     key_pass = 'NyaskKIJZz-Y0cIV0g38qB0UWi_1T7SuG3nTUfhrjbU='
     key_pass = key_pass.encode()
 
-    print(key_pass)
 
     encryption_type_pass = Fernet(key_pass)
 
-    print(encryption_type_pass)
 
     password = encryption_type_pass.encrypt(password.encode()).decode()
 

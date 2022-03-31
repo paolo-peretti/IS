@@ -14,7 +14,7 @@
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       {% for msg in messages %}
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-danger" role="alert">
             {{msg}}
         </div>
       {% endfor %}
@@ -29,18 +29,24 @@
 <div class="card card-body" style="margin:5%;">
 
     <div class="row" style="margin-top:5%;">
-        <div class="col-sm-4" style="text-align:right;">
-        <label>Select a District : </label></div>
 
+        <div class="col-md-1"></div>
 
-        <div class='col-xl-4' style="width: 50%;">
-
+        <div class='col-md-3'>
+             <label>select a district :    </label>
         <select class="form-select" aria-label="Default select example" name="district">
                         <option selected>select a district</option>
                         {% for district in all_districts %}
                           <option>{{district}}</option>
                         {% endfor %}
                       </select>
+            </div>
+
+        <div class="col-md-1"></div>
+
+        <div class='col-xl' >
+        <label>Type the address :    </label>
+            <input type='text' name="address" placeholder="type the address" style="width:50%;">
             </div>
 
     </div>

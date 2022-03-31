@@ -313,6 +313,9 @@ def add_listing():
     if request.method == 'POST':
 
 
+
+        address = request.form["address"]
+
         district = request.form["district"]
 
         price = request.form["price"]
@@ -327,13 +330,18 @@ def add_listing():
             bathroom = request.form["bathroom"]  # private bathroom or shared bathroom
             features.append(bathroom)
         except Exception:
-            bathroom = ''
+            flash('You have to choose the type of bathroom !', 'message')
+            return render_template('add_listing.html', all_districts=all_districts)
         try:
             furnished = request.form['furnished']
             if 'yes' in furnished:
                 features.append('furnished')
         except Exception:
-            furnished = ''
+            flash('You have to choose if the house is furnished or not !', 'message')
+            return render_template('add_listing.html', all_districts=all_districts)
+
+
+
 
         # features
 
@@ -353,20 +361,44 @@ def add_listing():
                 types.append(value)
 
 
-        search_query = [district, types, price, features]
+
+        try:
+            types_str = ','.join(types)
+        except Exception:
+            types_str = ''
+        try:
+            features_str = ','.join(features)
+        except Exception:
+            features_str = ''
 
 
 
-        if add_a_listing(search_query, current_user.id):
-            flash('The listing is added successfully!', 'info')
+        search_query = [address, district, types_str, price, features_str]
+
+        print(search_query)
+
+        msg = msg_adding_listing(search_query)
+
+        print(msg)
+
+        if msg == '':
+
+            if add_a_listing(search_query, current_user.id):
+                flash('The listing is added successfully!', 'info')
+
+                listings = get_my_listings(current_user)
+                return render_template('my_listings.html', items=listings)
+
+            else:
+                flash('Something went wrong, please try again.', 'error')
+                return render_template('add_listing.html', all_districts=all_districts)
         else:
-            flash('Something went wrong, please try again.', 'error')
+
+            flash(msg, 'message')
             return render_template('add_listing.html', all_districts=all_districts)
 
 
-        listings = get_my_listings(current_user)
 
-        return render_template('my_listings.html', items=listings)
 
     else:
 
