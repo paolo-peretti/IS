@@ -375,11 +375,11 @@ def add_listing():
 
         search_query = [address, district, types_str, price, features_str]
 
-        print(search_query)
+
 
         msg = msg_adding_listing(search_query)
 
-        print(msg)
+
 
         if msg == '':
 
@@ -408,13 +408,6 @@ def add_listing():
 
 
 
-@app.route('/update_listing/<listing_id>', methods=['POST', 'GET'])
-@login_required
-def update_listing(listing_id):
-
-    listings = get_my_listings(current_user)
-
-    return render_template('my_listings.html', items=listings)
 
 
 
