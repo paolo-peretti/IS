@@ -1,14 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 
+
+
+{% if type == "add" %}
 <h2 style="color:black;
     text-align:center;
     display:inline-block;
     position:relative;
     width:100%; margin-top: 60px;margin-bottom: 30px;">Add a Listing</h2>
 
+{% else %}
 
-<!--Accordion-->
+<h2 style="color:black;
+    text-align:center;
+    display:inline-block;
+    position:relative;
+    width:100%; margin-top: 60px;margin-bottom: 30px;">Update a Listing</h2>
+
+{% endif %}
+
 
 
   {% with messages = get_flashed_messages() %}
@@ -35,10 +46,20 @@
         <div class='col-md-3'>
              <label>select a district :    </label>
         <select class="form-select" aria-label="Default select example" name="district">
-                        <option selected>select a district</option>
-                        {% for district in all_districts %}
-                          <option>{{district}}</option>
-                        {% endfor %}
+                        {% if type == "add" %}
+                            <option selected>select a district</option>
+                            {% for district in all_districts %}
+                              <option>{{district}}</option>
+                            {% endfor %}
+                        {% else %}
+                            {% for district in all_districts %}
+                                {% if listing_info[1] == district %}
+                                    <option selected>{{district}}</option>
+                                {% else %}
+                                    <option>{{district}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                       </select>
             </div>
 
@@ -46,7 +67,11 @@
 
         <div class='col-xl' >
         <label>Type the address :    </label>
-            <input type='text' name="address" placeholder="type the address" style="width:50%;">
+            {% if type == "add" %}
+                <input type='text' name="address" placeholder="type the address" style="width:50%;">
+            {% else %}
+                <input type='text' name="address" style="width:50%;" value={{listing_info[0]}}>
+            {% endif %}
             </div>
 
     </div>
@@ -59,8 +84,11 @@
                               <label>Price in €:</label>
 
                                  <div class="min">
-
-                                   <input type="number" name="price" min='0' max="5000" step="1" placeholder='0'>
+                                    {% if type == "add" %}
+                                        <input type="number" name="price" min='0' max="5000" step="1" placeholder='0'>
+                                     {% else %}
+                                        <input type="number" name="price" min='0' max="5000" step="1" value={{listing_info[3]}}>
+                                     {% endif %}
                                  </div>
 
 
@@ -71,33 +99,93 @@
                                 <label>Availability</label>
 
                                   <div>
-                                  <input type="checkbox" id="room" name="room">
-                                    <label for="room">room</label>
+                                      {% if type == "add" %}
+                                  <input type="checkbox" id="room_add" name="room">
+
+                                      {% else %}
+                                        {% if 'room' in listing_info[2] %}
+                                            <input type="checkbox" name="room" checked>
+                                        {% else %}
+                                            <input type="checkbox" name="room">
+                                        {% endif %}
+                                      {% endif %}
+                                      <label>room</label>
+
                                   </div>
 
                                   <div>
-                                    <input type="checkbox" id="double room" name="double room">
-                                    <label for="double room">double room</label>
+                                      {% if type == "add" %}
+                                  <input type="checkbox" name="double room">
+
+                                      {% else %}
+                                        {% if 'double room' in listing_info[2] %}
+                                            <input type="checkbox" name="double room" checked>
+                                        {% else %}
+                                            <input type="checkbox" name="double room">
+                                        {% endif %}
+                                      {% endif %}
+
+                                    <label>double room</label>
                                   </div>
                                   <div>
-                                  <input type="checkbox" id="apartment" name="apartment">
-                                    <label for="apartment">apartment</label>
+
+
+                                      {% if type == "add" %}
+                                  <input type="checkbox" name="apartment">
+
+                                      {% else %}
+                                        {% if 'apartment' in listing_info[2] %}
+                                            <input type="checkbox" name="apartment" checked>
+                                        {% else %}
+                                            <input type="checkbox" name="apartment">
+                                        {% endif %}
+                                      {% endif %}
+                                    <label>apartment</label>
                                   </div>
 
                               </div>
 
                               <div class="col-md-3">
 
-                                <label>Furnished ?</label>
-                                <div>
-                                <input type="radio" id="huey" name="furnished" value="yes">
-                                <label for="huey">Yes</label>
-                              </div>
 
-                              <div>
-                                <input type="radio" id="dewey" name="furnished" value="no">
-                                <label for="dewey">No</label>
-                              </div>
+
+                                <label>Furnished ?</label>
+
+                                  {% if type == "add" %}
+
+                                    <div>
+                                    <input type="radio" id="huey" name="furnished" value="yes" checked>
+                                    <label for="huey">Yes</label>
+                                  </div>
+
+                                  <div>
+                                    <input type="radio" id="dewey" name="furnished" value="no">
+                                    <label for="dewey">No</label>
+                                  </div>
+
+                                  {% else %}
+
+                                        {% if 'furnished' in listing_info[4] %}
+                                      <div>
+                                        <input type="radio" name="furnished" value="yes" checked>
+                                        <label>Yes</label>
+                                      </div>
+                                        <div>
+                                        <input type="radio" name="furnished" value="no">
+                                        <label>No</label>
+                                      </div>
+                                        {% else %}
+                                        <div>
+                                        <input type="radio" name="furnished" value="yes" >
+                                        <label>Yes</label>
+                                      </div>
+                                        <div>
+                                        <input type="radio" name="furnished" value="no" checked>
+                                        <label>No</label>
+                                      </div>
+                                        {% endif %}
+
+                                  {% endif %}
 
                               </div>
 
@@ -107,11 +195,11 @@
 
     <div class="row" style="margin-top: 50px;margin-bottom: 5%;">
 
-
+                                {% if type == "add" %}
                                 <div class="col-md-3" style="margin-left:10%;">
                                   <label>Bathroom</label>
                                   <div>
-                                    <input type="radio" id="bat1" name="bathroom" value="private bathroom">
+                                    <input type="radio" id="bat1" name="bathroom" value="private bathroom" checked>
                                     <label for="bat1">private bathroom</label>
                                   </div>
 
@@ -122,31 +210,138 @@
 
 
                                 </div>
+                                {% else %}
 
+                                    {% if "private bathroom" in listing_info[4] %}
+                                    <div class="col-md-3" style="margin-left:10%;">
+                                      <label>Bathroom</label>
+                                      <div>
+                                        <input type="radio"  name="bathroom" value="private bathroom" checked>
+                                        <label>private bathroom</label>
+                                      </div>
+
+                                      <div>
+                                        <input type="radio"  name="bathroom" value="shared bathroom">
+                                        <label>shared bathroom</label>
+                                      </div>
+
+
+                                    </div>
+                                    {% else %}
+                                    <div class="col-md-3" style="margin-left:10%;">
+                                      <label>Bathroom</label>
+                                      <div>
+                                        <input type="radio"  name="bathroom" value="private bathroom">
+                                        <label>private bathroom</label>
+                                      </div>
+
+                                      <div>
+                                        <input type="radio"  name="bathroom" value="shared bathroom" checked>
+                                        <label>shared bathroom</label>
+                                      </div>
+
+
+                                    </div>
+                                    {% endif %}
+
+                                {% endif %}
 
 
                                 <div class="col-md-4">
 
                                   <label>Features</label>
 
+                                    {% if type == "add" %}
                                   <div>
                                   <input type="checkbox" id="dishwasher" name="dishwasher">
                                     <label for="dishwasher">dishwasher</label>
                                   </div>
+                                    {% else %}
 
+                                        {% if "dishwasher" in listing_info[4] %}
+
+                                        <div>
+                                          <input type="checkbox" name="dishwasher" checked>
+                                            <label>dishwasher</label>
+                                          </div>
+                                        {% else %}
+                                        <div>
+                                          <input type="checkbox"  name="dishwasher">
+                                            <label >dishwasher</label>
+                                          </div>
+                                        {% endif %}
+                                    {% endif %}
+
+
+                                    {% if type == "add" %}
                                   <div>
                                     <input type="checkbox" id="lift" name="lift">
                                     <label for="lift">lift</label>
                                   </div>
-                                  <div>
-                                  <input type="checkbox" id="washing machine" name="washing machine">
-                                    <label for="washing machine">washing machine</label>
-                                  </div>
+                                    {% else %}
 
-                                  <div>
-                                    <input type="checkbox" id="parking area" name="parking area">
-                                    <label for="parking area">parking area</label>
+                                        {% if "lift" in listing_info[4] %}
+
+                                        <div>
+                                    <input type="checkbox" name="lift" checked>
+                                    <label>lift</label>
                                   </div>
+                                        {% else %}
+                                        <div>
+                                    <input type="checkbox" name="lift">
+                                    <label>lift</label>
+                                  </div>
+                                        {% endif %}
+                                    {% endif %}
+
+
+
+
+                                    {% if type == "add" %}
+                                  <div>
+                                  <input type="checkbox" name="washing machine">
+                                    <label>washing machine</label>
+                                  </div>
+                                    {% else %}
+
+                                        {% if "washing machine" in listing_info[4] %}
+
+                                        <div>
+                                  <input type="checkbox" name="washing machine" checked>
+                                    <label>washing machine</label>
+                                  </div>
+                                        {% else %}
+                                        <div>
+                                  <input type="checkbox" name="washing machine">
+                                    <label>washing machine</label>
+                                  </div>
+                                        {% endif %}
+                                    {% endif %}
+
+
+
+                                    {% if type == "add" %}
+                                  <div>
+                                    <input type="checkbox" name="parking area">
+                                    <label >parking area</label>
+                                  </div>
+                                    {% else %}
+
+                                        {% if "parking area" in listing_info[4] %}
+
+                                        <div>
+                                    <input type="checkbox" name="parking area" checked>
+                                    <label >parking area</label>
+                                  </div>
+                                        {% else %}
+                                        <div>
+                                    <input type="checkbox" name="parking area">
+                                    <label >parking area</label>
+                                  </div>
+                                        {% endif %}
+                                    {% endif %}
+
+
 
 
 
@@ -155,8 +350,14 @@
 
                                 <div class="col-md-3">
 
-                                    <button style="margin-top:20%;width:60%;" class="btn btn-secondary btn-block">Add Listing</button>
+                                    {% if type=='add' %}
 
+                                        <button style="margin-top:20%;width:60%;" class="btn btn-secondary btn-block">Add Listing</button>
+
+                                    {% else %}
+                                        <button style="margin-top:20%;width:60%;" class="btn btn-secondary btn-block">Update Listing</button>
+
+                                    {% endif %}
                               </div>
 
                             </div>

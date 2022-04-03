@@ -331,14 +331,14 @@ def add_listing():
             features.append(bathroom)
         except Exception:
             flash('You have to choose the type of bathroom !', 'message')
-            return render_template('add_listing.html', all_districts=all_districts)
+            return render_template('add_listing.html', all_districts=all_districts, type='add')
         try:
             furnished = request.form['furnished']
             if 'yes' in furnished:
                 features.append('furnished')
         except Exception:
             flash('You have to choose if the house is furnished or not !', 'message')
-            return render_template('add_listing.html', all_districts=all_districts)
+            return render_template('add_listing.html', all_districts=all_districts, type='add')
 
 
 
@@ -391,11 +391,11 @@ def add_listing():
 
             else:
                 flash('Something went wrong, please try again.', 'error')
-                return render_template('add_listing.html', all_districts=all_districts)
+                return render_template('add_listing.html', all_districts=all_districts, type='add')
         else:
 
             flash(msg, 'message')
-            return render_template('add_listing.html', all_districts=all_districts)
+            return render_template('add_listing.html', all_districts=all_districts, type='add')
 
 
 
@@ -403,11 +403,41 @@ def add_listing():
     else:
 
 
-        return render_template('add_listing.html', all_districts=all_districts)
+        return render_template('add_listing.html', all_districts=all_districts, type='add')
 
 
 
+@app.route('/update_listing/<listing_id>', methods=['POST', 'GET'])
+@login_required
+def update_listing(listing_id):
+    if request.method == 'POST':
+        pass
 
+    else:
+
+        try:
+            listing = Listing.query.filter_by(house_ID=int(listing_id)).first()
+
+            types_available = listing.type_room.split(',')
+            features = listing.features.split(',')
+
+            try:
+                if isinstance(int(listing.price), int):
+                    price = int(listing.price)
+            except Exception:
+
+                flash('Something went wrong, please try again.', 'error')
+                return render_template('add_listing.html', all_districts=all_districts, type='update')
+
+
+            listing_info = [listing.address, listing.district, types_available, price, features]
+            print(listing_info)
+
+            return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
+
+        except Exception:
+            flash('Something went wrong, please try again.', 'error')
+            return render_template('add_listing.html', all_districts=all_districts, type='update')
 
 
 
