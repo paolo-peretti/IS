@@ -410,34 +410,106 @@ def add_listing():
 @app.route('/update_listing/<listing_id>', methods=['POST', 'GET'])
 @login_required
 def update_listing(listing_id):
-    if request.method == 'POST':
-        pass
 
-    else:
 
-        try:
-            listing = Listing.query.filter_by(house_ID=int(listing_id)).first()
+    check_listing_db, listing_info, listing = get_listing_info(listing_id)
 
-            types_available = listing.type_room.split(',')
-            features = listing.features.split(',')
+    if check_listing_db:
+
+        if request.method == 'POST':
+
+
+
+            district = request.form["district"]
+
+            price = request.form["price"]
+
+            if district not in all_districts:
+                district = ''
+
+            # features
+            features = []
+            try:
+                bathroom = request.form["bathroom"]  # private bathroom or shared bathroom
+                features.append(bathroom)
+            except Exception:
+                flash('You have to choose the type of bathroom !', 'message')
+                return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
+            try:
+                furnished = request.form['furnished']
+                if 'yes' in furnished:
+                    features.append('furnished')
+            except Exception:
+                flash('You have to choose if the house is furnished or not !', 'message')
+                return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
+
+            # features
+
+            for feature in all_features_with_checkbox:
+                value = get_feature_value(request, feature)
+                if value != '':
+                    features.append(value)
+
+            # type_room
+
+            types = []
+
+            for type_room in room_types:
+                value = get_feature_value(request, type_room)
+                if value != '':
+                    types.append(value)
 
             try:
-                if isinstance(int(listing.price), int):
-                    price = int(listing.price)
+                types_str = ','.join(types)
             except Exception:
+                types_str = ''
+            try:
+                features_str = ','.join(features)
+            except Exception:
+                features_str = ''
 
-                flash('Something went wrong, please try again.', 'error')
-                return render_template('add_listing.html', all_districts=all_districts, type='update')
+            search_query = ['address', district, types_str, price, features_str]
+
+            msg = msg_adding_listing(search_query)
 
 
-            listing_info = [listing.address, listing.district, types_available, price, features]
-            print(listing_info)
 
+            if msg == '':
+
+                elements_to_update = check_update_listing(search_query, listing)
+
+
+                if len(list(elements_to_update.keys())) > 0:
+
+                    if update_a_listing(elements_to_update, int(listing_id)):
+
+                        flash('The listing is updated successfully!', 'info')
+
+                        listings = get_my_listings(current_user)
+                        return render_template('my_listings.html', items=listings)
+
+                    else:
+                        flash('Something went wrong, please try again.', 'error')
+                        return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
+
+                else:
+                    flash('You have not changed anything. ', 'error')
+                    return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
+
+            else:
+
+                flash(msg, 'message')
+                return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
+
+        else: # GET
             return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
 
-        except Exception:
-            flash('Something went wrong, please try again.', 'error')
-            return render_template('add_listing.html', all_districts=all_districts, type='update')
+
+
+
+    else:
+        flash('Something went wrong, please try again.', 'error')
+        return render_template('base.html')
 
 
 

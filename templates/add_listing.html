@@ -66,11 +66,14 @@
         <div class="col-md-1"></div>
 
         <div class='col-xl' >
-        <label>Type the address :    </label>
+
             {% if type == "add" %}
+                <label>Type the address :    </label>
                 <input type='text' name="address" placeholder="type the address" style="width:50%;">
             {% else %}
-                <input type='text' name="address" style="width:50%;" value={{listing_info[0]}}>
+                <label>the address :    </label>
+                {{listing_info[0]}}
+
             {% endif %}
             </div>
 

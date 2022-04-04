@@ -332,6 +332,26 @@ def check_update_info(info_user, current_user):
     return msg, elements_to_update
 
 
+def check_update_listing(search_query, listing):
+
+    address, district, types_str, price, features_str = search_query
+
+    elements_to_update = {}
+
+
+    if listing.district != district:
+        elements_to_update['district'] = district
+    if listing.type_room != types_str:
+        elements_to_update['types_str'] = types_str
+    if int(listing.price) != int(price):
+        elements_to_update['price'] = int(price)
+    if listing.features != features_str:
+        elements_to_update['features_str'] = features_str
+
+
+    return elements_to_update
+
+
 
 
 def check_password_update(info_user, current_user):
@@ -393,6 +413,27 @@ def update_user(elements_to_update, current_user):
 
 
 
+def update_a_listing(elements_to_update, listing_id):
+
+    try:
+        listing = Listing.query.filter_by(house_ID=int(listing_id)).first()
+
+
+        if 'district' in list(elements_to_update.keys()):
+            listing.district = elements_to_update['district']
+        if 'types_str' in list(elements_to_update.keys()):
+            listing.type_room = elements_to_update['types_str']
+        if 'price' in list(elements_to_update.keys()):
+            listing.price = elements_to_update['price']
+        if 'features_str' in list(elements_to_update.keys()):
+            listing.features = elements_to_update['features_str']
+
+        db.session.commit()
+        return True
+    except Exception:
+        return False
+
+
 def get_my_chats(current_user):
 
     query = 'SELECT "user1_ID", "user2_ID", message FROM public.messages WHERE messages."user1_ID"='
@@ -432,3 +473,27 @@ def get_my_chats(current_user):
     return chats
 
 
+
+
+
+def get_listing_info(listing_id):
+
+    try:
+        listing = Listing.query.filter_by(house_ID=int(listing_id)).first()
+
+        types_available = listing.type_room.split(',')
+        features = listing.features.split(',')
+
+        try:
+            if isinstance(int(listing.price), int):
+                price = int(listing.price)
+        except Exception:
+
+            return False, [], listing
+
+        listing_info = [listing.address, listing.district, types_available, price, features]
+
+        return True, listing_info, listing
+
+    except Exception:
+        return False, [], listing
