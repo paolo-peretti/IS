@@ -1,7 +1,7 @@
 
 from cryptography.fernet import Fernet
 
-from models import User, Listing
+from models import User, Listing, Like
 from extensions import db
 import re
 import random
@@ -41,6 +41,69 @@ def get_my_listings(current_user):
 
 
     return listings_with_images
+
+
+
+def get_my_favorites(user_ID):
+
+    listings = []
+
+    try:
+        query = 'SELECT "listing_ID" FROM likes '
+        query += 'WHERE likes."user_ID" '
+        query += "= " + str(user_ID) + " ;"
+
+        result_query = db.engine.execute(query)
+        results = result_query.fetchall()
+
+
+        for listing in results:
+            listings.append(int(listing[0]))
+
+
+    except Exception:
+        pass
+
+
+    return listings
+
+
+
+def add_like_to_listing(listing_id, user_id):
+
+    try:
+        like = Like(user_id, listing_id)
+        db.session.add(like)
+        db.session.commit()
+        return True
+    except Exception:
+        return False
+
+
+
+
+def delete_like_to_listing(listing_id, user_id):
+
+    try:
+
+        query = "DELETE FROM likes "
+        query += 'WHERE '
+        query += 'likes."listing_ID" = '
+        query += str(int(listing_id)) + " AND "
+        query += 'likes."user_ID" = '
+        query += str(int(user_id))
+
+
+        db.engine.execute(query)
+        db.session.commit()
+
+        return True
+    except Exception:
+        return False
+
+
+
+
 
 
 

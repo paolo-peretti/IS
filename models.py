@@ -52,8 +52,8 @@ class Message(db.Model):
     __tablename__ = 'messages'
 
     message_ID = db.Column(db.Integer, primary_key=True)
-    user1_ID = db.Column(db.String(120), nullable=False) # who sent the message
-    user2_ID = db.Column(db.String(120), nullable=False)
+    user1_ID = db.Column(db.Integer, nullable=False) # who sent the message
+    user2_ID = db.Column(db.Integer, nullable=False)
     message = db.Column(db.String(600), nullable=False)
 
 
@@ -61,3 +61,37 @@ class Message(db.Model):
         self.user1_ID = user1_ID
         self.user2_ID = user2_ID
         self.message = message
+
+
+
+class Review(db.Model):
+    __tablename__ = 'reviews'
+
+    review_ID = db.Column(db.Integer, primary_key=True)
+    user_ID = db.Column(db.Integer, nullable=False) # user
+    listing_ID = db.Column(db.Integer, nullable=False) # could be the listing
+    # type_receiver = db.Column(db.String(120), nullable=False) # listing or searcher
+    text = db.Column(db.String(600), nullable=False)
+    num_flag = db.Column(db.Integer, nullable=False)
+
+
+    def __init__(self, sender_ID, receiver_ID, text, num_flag):
+        self.sender_ID = sender_ID
+        self.receiver_ID = receiver_ID
+        # self.type_receiver = type_receiver
+        self.text = text
+        self.num_flag = num_flag
+
+
+
+class Like(db.Model):
+    __tablename__ = 'likes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_ID = db.Column(db.Integer, nullable=False) # user
+    listing_ID = db.Column(db.Integer, nullable=False) # could be the listing
+
+
+    def __init__(self, user_ID, listing_ID):
+        self.user_ID = user_ID
+        self.listing_ID = listing_ID

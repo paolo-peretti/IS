@@ -69,7 +69,14 @@ def index():
 
 
         search_query = [district, type_room, min_price, max_price, features]
+
         items = get_listings(search_query)
+
+        try:
+            user_favorites = get_my_favorites(current_user.id)
+        except Exception:
+            # print('maybe the user is not logged in!')
+            user_favorites=[]
 
         # print(current_user.is_authenticated)
 
@@ -77,7 +84,7 @@ def index():
         #     user = session["user"]
         #     return render_template('index.html', usr=user, items=items, all_districts=all_districts)
 
-        return render_template('index.html', items=items, all_districts=all_districts)
+        return render_template('index.html', items=items, all_districts=all_districts, user_favorites=user_favorites)
 
 
     else:
@@ -90,7 +97,45 @@ def index():
         return render_template('index.html', all_districts=all_districts)
 
 
+@app.route('/like/<listing_id>', methods=['GET'])
+@login_required
+def like(listing_id):
 
+    listings = get_my_favorites(current_user.id)
+
+    if int(listing_id) not in listings:
+        if add_like_to_listing(listing_id, current_user.id):
+            flash('You have added this listing to your favorites listings!', 'info')
+        else:
+            flash('Something went wrong, please try again.', 'error')
+    else:
+        flash('Something went wrong, please try again.', 'error')
+
+    return redirect(url_for('index'), code=307) #post
+
+
+@app.route('/unlike/<listing_id>', methods=['GET'])
+@login_required
+def unlike(listing_id):
+
+
+    if delete_like_to_listing(listing_id, current_user.id):
+        flash('You have deleted this listing to your favorites listings!', 'info')
+    else:
+        flash('Something went wrong, please try again.', 'error')
+
+
+    return redirect(url_for('index'), code=307) #post
+
+
+@app.route('/my_favorites', methods=['POST', 'GET'])
+@login_required
+def my_favorites():
+
+    if request.method == 'POST':
+        pass
+    else:
+        return render_template('my_favorites.html')
 
 
 
@@ -237,8 +282,6 @@ def chats(interlocutor):
         return render_template('chats.html', chats=messages, current_interlocutor=interlocutor, test_chats=True)
 
 
-
-
     else:
 
         test_chats = True
@@ -288,6 +331,9 @@ def my_listings():
 
     listings = get_my_listings(current_user)
     return render_template('my_listings.html', items=listings)
+
+
+
 
 
 

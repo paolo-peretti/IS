@@ -126,7 +126,10 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('my_listings') }}">My Listings</a>
             </li>
-
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('my_favorites') }}">My favorites</a>
+            </li>
           {% endif %}
 
             <li class="nav-item">
