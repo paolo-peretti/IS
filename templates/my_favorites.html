@@ -1,4 +1,128 @@
 {% extends "base.html" %}
 {% block content %}
 
+
+<h2 style="text-align:center;margin-top:30px;">My favorites Listings</h2>
+
+
+<!--Accordion-->
+
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-info" role="alert">
+            {{msg}}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+
+
+
+
+<div id="search-box" style="margin-top:20px;margin-left:15%;margin-right:15%;margin-bottom:20px;background:#f4f2f4;">
+
+    {% if items != undefined %}
+
+        <div style="padding:0.1%;">
+    {% if items != [] %}
+        {% for item in items %}
+
+        <hr>
+
+        <div class="row" style="margin-bottom:30px;margin-top:30px;width:80%;margin-left:10%;margin-right:10%;">
+
+
+            <div class="col-md-4" >
+                <img src={{ item[1] }} alt="Image of the house">
+
+                </div>
+
+
+            {% if current_user.is_authenticated %}
+
+                {% if current_user.type_user == 'searcher' %}
+                    <div class="col-sm-1" style="margin-top: 5%;">
+
+        <!--                favorites-->
+
+                        {% if item[0][0] in user_favorites %}
+
+                            <a href="{{ url_for('unlike',listing_id=item[0][0]) }}"  class="btn btn-outline-danger"><span class="fa fa-heart"></span></a>
+                        {% else %}
+                            <a href="{{ url_for('like',listing_id=item[0][0]) }}"  class="btn btn-outline-danger"><span class="heart fa fa-heart-o"></span></a>
+                        {% endif %}
+
+
+                    </div>
+                {% endif %}
+            {% endif %}
+
+
+            <div class="col-xl" style="margin-left:10%;">
+
+                <h4>District : {{ item[0][2] }}</h4>
+
+                <h5>Address : {{ item[0][1] }}</h5>
+
+                <h5>Price : {{ item[0][4] }} €</h5>
+
+
+                <h5>Features :</h5>
+                <p>{{ item[0][5] }}</p>
+
+                </div>
+
+            <div class="col-sm-3" >
+
+<!--                sending a message requires the id of the owner-->
+
+                <a href="{{ url_for('chats',interlocutor=item[0][6]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
+
+                </div>
+
+
+            <div class="col-sm-3" >
+
+<!--                sending a message requires the id of the owner-->
+                <a href="{{ url_for('chats',interlocutor=item[0][6]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Write Review</a>
+
+
+                </div>
+            <div class="col-sm-3" >
+
+<!--                sending a message requires the id of the owner-->
+                <a href="{{ url_for('chats',interlocutor=item[0][6]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Read Review</a>
+
+
+                </div>
+
+
+
+        </div>
+        <hr>
+
+        <div></div>
+
+
+
+        {% endfor %}
+    {% else %}
+    <div style="margin-right: 20%;margin-left:20%;color:red;">
+        <h3 >You have not liked any listings! </h3>
+    </div>
+    {% endif %}
+
+    </div>
+
+    {% endif %}
+
+    </div>
+
+
+
+
 {% endblock %}

@@ -1,4 +1,4 @@
-
+import items as items
 from flask import render_template, request, session, flash, url_for, redirect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
@@ -135,7 +135,23 @@ def my_favorites():
     if request.method == 'POST':
         pass
     else:
-        return render_template('my_favorites.html')
+
+        search_query = ['','','','',[]]
+
+        items = get_listings(search_query)
+
+        try:
+            user_favorites = get_my_favorites(current_user.id)
+        except Exception:
+            # print('maybe the user is not logged in!')
+            user_favorites = []
+
+        favorite_listings = []
+        for item in items:
+            if int(item[0][0]) in user_favorites:
+                favorite_listings.append(item)
+
+        return render_template('my_favorites.html', items=favorite_listings, user_favorites=user_favorites)
 
 
 

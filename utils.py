@@ -162,6 +162,11 @@ def msg_adding_listing(search_query):
 
     return msg
 
+
+
+
+
+
 def get_listings(search_query):
 
 
@@ -268,6 +273,9 @@ def get_listings(search_query):
 
 
     return listings_with_images
+
+
+
 
 
 
