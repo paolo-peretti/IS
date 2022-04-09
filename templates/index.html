@@ -184,13 +184,14 @@
 
         <div class="row" style="margin-bottom:30px;margin-top:30px;width:80%;margin-left:10%;margin-right:10%;">
 
+            <div class="row">
 
-            <div class="col-md-3" >
+            <div class="col-md-4" >
                 <img src={{ item[1] }} alt="Image of the house">
 
                 </div>
 
-            <div class="col-xl-4" style="margin-left:10%;">
+            <div class="col-xl" style="margin-left:10%;">
 
                 <h4>District : {{ item[0][2] }}</h4>
 
@@ -222,13 +223,20 @@
                     </div>
                 {% endif %}
             {% endif %}
+                </div>
 
 
-            <div class="col-sm-2" >
+            <div class="col-sm-3" >
 
 <!--                sending a message requires the id of the owner-->
 
                 <a href="{{ url_for('chats',interlocutor=item[0][6]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact Owner</a>
+
+
+                </div>
+            <div class="col-sm-3" >
+
+                <a href="{{ url_for('read_reviews',listing_id=item[0][0]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Read Reviews</a>
 
 
                 </div>
