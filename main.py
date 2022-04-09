@@ -2,6 +2,7 @@
 from flask import render_template, request, session, flash, url_for, redirect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
+
 from extensions import app, db
 from utils import *
 from models import User, Message, Listing, Review
@@ -10,6 +11,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.session_protection = "strong"
+
 
 
 
