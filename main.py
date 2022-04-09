@@ -217,6 +217,7 @@ def write_review(listing_id):
 def read_reviews(listing_id):
 
     reviews = get_reviews_of_listing(int(listing_id))
+    # print(reviews)
 
     # reviews[0] = users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews.review_ID
 
@@ -228,10 +229,18 @@ def read_reviews(listing_id):
 @login_required
 def delete_review(review_id):
 
-    if delete_my_review(review_id):
-        flash('You have deleted the review successfully.', 'info')
+
+    review = Review.query.filter_by(review_ID=int(review_id)).first()
+
+    if int(review.user_ID) == current_user.id:
+
+        if delete_my_review(int(review_id)):
+            flash('You have deleted the review successfully.', 'info')
+        else:
+            flash('Something went wrong, please try again.', 'error')
     else:
         flash('Something went wrong, please try again.', 'error')
+
     return redirect(url_for('my_favorites'))
 
 

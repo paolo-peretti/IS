@@ -128,12 +128,14 @@ def delete_my_listings(listing_id):
 
 def delete_my_review(review_id):
 
+    # print(review_id)
+
     try:
 
-        query = "DELETE FROM review "
+        query = "DELETE FROM reviews "
         query += 'WHERE '
-        query += 'review.review_ID = '
-        query += "'" + str(review_id) + "' "
+        query += 'reviews."review_ID" = '
+        query += "" + str(review_id) + " "
 
         db.engine.execute(query)
         db.session.commit()
@@ -596,13 +598,14 @@ def get_reviews_of_listing(listing_ID):
     results = []
 
     try:
-        query = 'SELECT users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews.review_ID '
+        query = 'SELECT users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews."review_ID" '
         query += 'FROM reviews INNER JOIN users ON reviews."user_ID" = users.id '
         query += 'WHERE reviews."listing_ID"'
         query += "= '" + str(listing_ID) + "' ;"
 
         result_query = db.engine.execute(query)
         results = result_query.fetchall()
+        # print(results)
 
     except Exception:
         pass
