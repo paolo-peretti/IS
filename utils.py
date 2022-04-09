@@ -69,6 +69,9 @@ def get_my_favorites(user_ID):
 
 
 
+
+
+
 def add_like_to_listing(listing_id, user_id):
 
     try:
@@ -104,9 +107,6 @@ def delete_like_to_listing(listing_id, user_id):
 
 
 
-
-
-
 def delete_my_listings(listing_id):
 
     try:
@@ -115,6 +115,25 @@ def delete_my_listings(listing_id):
         query += 'WHERE '
         query += 'listings."house_ID" = '
         query += "'" + str(listing_id) + "' "
+
+        db.engine.execute(query)
+        db.session.commit()
+
+        return True
+    except Exception:
+        return False
+
+
+
+
+def delete_my_review(review_id):
+
+    try:
+
+        query = "DELETE FROM review "
+        query += 'WHERE '
+        query += 'review.review_ID = '
+        query += "'" + str(review_id) + "' "
 
         db.engine.execute(query)
         db.session.commit()
@@ -568,3 +587,24 @@ def get_listing_info(listing_id):
 
     except Exception:
         return False, [], listing
+
+
+
+
+def get_reviews_of_listing(listing_ID):
+
+    results = []
+
+    try:
+        query = 'SELECT users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews.review_ID '
+        query += 'FROM reviews INNER JOIN users ON reviews."user_ID" = users.id '
+        query += 'WHERE reviews."listing_ID"'
+        query += "= '" + str(listing_ID) + "' ;"
+
+        result_query = db.engine.execute(query)
+        results = result_query.fetchall()
+
+    except Exception:
+        pass
+
+    return results

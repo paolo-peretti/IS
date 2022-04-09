@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h2 style="text-align:center;margin-top:30px;">Write a review</h2>
+<div style="width:60%;margin-top:5%;margin-left:20%;margin-right:20%;">
+
+
+
+    <form method="post" action="#">
+
+        <div class="min">
+            <label>Rating between 1 and 10</label><span id="min-value"></span>
+            <input type="number" name="num_flag" min='1' max="10" step="1" placeholder='1-10'>
+        </div>
+
+        <div class="form-group" style="margin-top:5%;">
+          <label for="exampleFormControlTextarea3">Write in the box below</label>
+          <textarea class="form-control" id="exampleFormControlTextarea3" rows="7" name="review"></textarea>
+        </div>
+
+
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for msg in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{msg}}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+        <button type="submit" class="btn btn-info">Send review</button>
+
+
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}

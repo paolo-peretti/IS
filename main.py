@@ -4,7 +4,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from extensions import app, db
 from utils import *
-from models import User, Message, Listing
+from models import User, Message, Listing, Review
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -111,7 +111,7 @@ def like(listing_id):
     else:
         flash('Something went wrong, please try again.', 'error')
 
-    return redirect(url_for('index'), code=307) #post
+    return redirect(url_for('my_favorites')) #post
 
 
 @app.route('/unlike/<listing_id>', methods=['GET'])
@@ -125,33 +125,119 @@ def unlike(listing_id):
         flash('Something went wrong, please try again.', 'error')
 
 
-    return redirect(url_for('index'), code=307) #post
+    return redirect(url_for('my_favorites'))
 
 
-@app.route('/my_favorites', methods=['POST', 'GET'])
+@app.route('/my_favorites', methods=['GET'])
 @login_required
 def my_favorites():
 
+
+    search_query = ['','','','',[]]
+
+    items = get_listings(search_query)
+
+    try:
+        user_favorites = get_my_favorites(current_user.id)
+    except Exception:
+        # print('maybe the user is not logged in!')
+        user_favorites = []
+
+    favorite_listings = []
+    for item in items:
+        if int(item[0][0]) in user_favorites:
+            favorite_listings.append(item)
+
+    return render_template('my_favorites.html', items=favorite_listings, user_favorites=user_favorites)
+
+
+
+
+
+@app.route('/write_review/<listing_id>', methods=['POST', 'GET'])
+@login_required
+def write_review(listing_id):
+
     if request.method == 'POST':
-        pass
-    else:
 
-        search_query = ['','','','',[]]
+        review = request.form["review"]
+        num_flag = request.form['num_flag']
 
-        items = get_listings(search_query)
+        check_review = False
 
         try:
-            user_favorites = get_my_favorites(current_user.id)
+            if isinstance(int(num_flag), int):
+
+                num_flag = int(num_flag)
+                check_int=True
+
         except Exception:
-            # print('maybe the user is not logged in!')
-            user_favorites = []
+            check_int=False
 
-        favorite_listings = []
-        for item in items:
-            if int(item[0][0]) in user_favorites:
-                favorite_listings.append(item)
+        if check_int:
 
-        return render_template('my_favorites.html', items=favorite_listings, user_favorites=user_favorites)
+            if review != '':
+
+                listing = Listing.query.filter_by(house_ID=listing_id).first()
+
+                if listing:
+                    try:
+                        review = Review(int(current_user.id), int(listing_id), review, int(num_flag))
+                        db.session.add(review)
+                        db.session.commit()
+
+                        flash('The review is added successfully!', 'message')
+                        check_review=True
+
+
+                    except Exception:
+                        flash('Something went wrong! Please try again later.', 'message')
+                else:
+                    flash('Something went wrong! Please try again later.', 'message')
+
+            else:
+
+                flash('You have to write something to send a message!', 'message')
+        else:
+            flash('You have to write a number for rating the listing!', 'message')
+
+        if check_review:
+            return redirect(url_for('my_favorites'))
+        else:
+            return render_template('write_review.html')
+    else:
+        return render_template('write_review.html')
+
+
+
+
+
+@app.route('/read_reviews/<listing_id>', methods=['GET'])
+@login_required
+def read_reviews(listing_id):
+
+    reviews = get_reviews_of_listing(int(listing_id))
+
+    # reviews[0] = users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews.review_ID
+
+    return render_template('read_reviews.html', items=reviews)
+
+
+
+@app.route('/delete_review/<review_id>', methods=['GET'])
+@login_required
+def delete_review(review_id):
+
+    if delete_my_review(review_id):
+        flash('You have deleted the review successfully.', 'info')
+    else:
+        flash('Something went wrong, please try again.', 'error')
+    return redirect(url_for('my_favorites'))
+
+
+
+
+
 
 
 

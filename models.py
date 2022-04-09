@@ -70,14 +70,13 @@ class Review(db.Model):
     review_ID = db.Column(db.Integer, primary_key=True)
     user_ID = db.Column(db.Integer, nullable=False) # user
     listing_ID = db.Column(db.Integer, nullable=False) # could be the listing
-    # type_receiver = db.Column(db.String(120), nullable=False) # listing or searcher
     text = db.Column(db.String(600), nullable=False)
     num_flag = db.Column(db.Integer, nullable=False)
 
 
-    def __init__(self, sender_ID, receiver_ID, text, num_flag):
-        self.sender_ID = sender_ID
-        self.receiver_ID = receiver_ID
+    def __init__(self, user_ID, listing_ID, text, num_flag):
+        self.user_ID = user_ID
+        self.listing_ID = listing_ID
         # self.type_receiver = type_receiver
         self.text = text
         self.num_flag = num_flag

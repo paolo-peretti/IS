@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<h2 style="text-align:center;margin-top:30px;margin-bottom:30px;">Reviews</h2>
+
+
+<!--Accordion-->
+
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-info" role="alert">
+            {{msg}}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+
+
+
+
+<div id="search-box" style="margin-top:20px;margin-left:15%;margin-right:15%;margin-bottom:20px;background:#f4f2f4;">
+
+    {% if items != undefined %}
+
+        <div style="padding:0.1%;">
+    {% if items != [] %}
+        {% for item in items %}
+
+        <hr>
+
+        <div class="row" style="margin-bottom:30px;margin-top:30px;width:80%;margin-left:10%;margin-right:10%;">
+
+            {% if item[1] == current_user.id %}
+            <div class="col-sm-1" >
+               <h5>Me</h5>
+
+                </div>
+            {% else %}
+            <div class="col-sm-1" >
+               <h5>User: {{ item[0] }}</h5>
+
+                </div>
+            {% endif %}
+
+
+
+            <div class="col-xl" style="margin-left:10%;">
+
+                <p>Rating: {{ item[3] }} / 10 </p>
+                <hr>
+                <p>{{ item[2] }}</p>
+
+                </div>
+
+
+            {% if item[1] == current_user.id %}
+            <div class="col-sm-3" >
+                <a href="{{ url_for('delete_review',review_id=item[4]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Delete Review</a>
+
+            </div>
+
+            {% else %}
+            <div class="col-sm-3" >
+
+<!--                sending a message requires the id of the reviewer-->
+
+                <a href="{{ url_for('chats',interlocutor=item[1]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Contact User</a>
+
+                </div>
+            {% endif %}
+
+
+
+
+
+
+        </div>
+        <hr>
+
+        <div></div>
+
+
+
+        {% endfor %}
+    {% else %}
+    <div style="margin-right: 20%;margin-left:20%;color:red;">
+        <h3 >No reviews for this listing!</h3>
+    </div>
+    {% endif %}
+
+    </div>
+
+    {% endif %}
+
+    </div>
+
+
+
+
+{% endblock %}
