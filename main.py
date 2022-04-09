@@ -387,7 +387,7 @@ def chats(interlocutor):
 
 
         messages = get_my_chats(current_user)
-        session["messages"] = messages
+        # session["messages"] = messages
 
 
         return render_template('chats.html', chats=messages, current_interlocutor=interlocutor, test_chats=True)
@@ -399,11 +399,9 @@ def chats(interlocutor):
 
         if interlocutor == 'none':
 
-            if "messages" in session:
-                messages = session["messages"]
-            else:
-                messages = get_my_chats(current_user)
-                session["messages"] = messages
+
+            messages = get_my_chats(current_user)
+
 
             try:
                 interlocutor = list(messages.keys())[0]
@@ -424,11 +422,10 @@ def chats(interlocutor):
             except Exception:
                 pass
 
-            if "messages" in session:
-                messages = session["messages"]
-            else:
-                messages = get_my_chats(current_user)
-                session["messages"] = messages
+
+
+            messages = get_my_chats(current_user)
+
 
 
 
@@ -748,7 +745,6 @@ def register():
 @login_required
 def logout():
     # print(current_user)
-    session.pop("messages", None)
     logout_user()
     return redirect(url_for("index"))
 
