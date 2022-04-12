@@ -13,13 +13,15 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(120), nullable=False)
     name = db.Column(db.String(80), nullable=False)
     type_user = db.Column(db.String(80), nullable=False)
+    description = db.Column(db.String(1200))
 
-    def __init__(self, username, email, password, name, type_user):
+    def __init__(self, username, email, password, name, type_user, description):
         self.username = username
         self.email = email
         self.password = password
         self.name = name
         self.type_user = type_user
+        self.description = description
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -54,7 +56,7 @@ class Message(db.Model):
     message_ID = db.Column(db.Integer, primary_key=True)
     user1_ID = db.Column(db.Integer, nullable=False) # who sent the message
     user2_ID = db.Column(db.Integer, nullable=False)
-    message = db.Column(db.String(600), nullable=False)
+    message = db.Column(db.String(1200), nullable=False)
 
 
     def __init__(self, user1_ID, user2_ID, message):
@@ -70,7 +72,7 @@ class Review(db.Model):
     review_ID = db.Column(db.Integer, primary_key=True)
     user_ID = db.Column(db.Integer, nullable=False) # user
     listing_ID = db.Column(db.Integer, nullable=False) # could be the listing
-    text = db.Column(db.String(600), nullable=False)
+    text = db.Column(db.String(1200), nullable=False)
     num_flag = db.Column(db.Integer, nullable=False)
 
 

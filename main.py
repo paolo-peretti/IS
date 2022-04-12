@@ -293,6 +293,18 @@ def update_user_informations():
             check_pass = False
 
 
+        try:
+
+            description = request.form["description"]
+            # print(description)
+
+            check_description = True
+
+        except Exception:
+
+            check_description = False
+
+
         if check_info:
 
 
@@ -343,6 +355,32 @@ def update_user_informations():
             return render_template('login.html', type='update')
 
 
+        if check_description:
+
+
+            if description != '':
+
+                if description != current_user.description:
+
+                    elements_to_update = {}
+                    elements_to_update['description'] = description
+
+                    status = update_user(elements_to_update, current_user)
+
+                    if status:
+
+                        flash('You have set a description successfully!', 'info')
+
+                    else:
+
+                        flash('Something went wrong, please try again.', 'error')
+                else:
+                    flash('You have not changed anything, please try again.', 'error')
+            else:
+                flash('You have to write something here!', 'error')
+
+
+            return render_template('login.html', type='update')
 
         flash('Something went wrong, please try again.', 'error')
         return render_template('login.html', type='update')

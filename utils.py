@@ -470,7 +470,7 @@ def add_user(info_user):
 
     username, email, password, password_confirm, name, type_user = info_user
     try:
-        usr = User(username, email, encoding_password(password), name, type_user)
+        usr = User(username, email, encoding_password(password), name, type_user, '')
         db.session.add(usr)
         db.session.commit()
         return True
@@ -497,6 +497,9 @@ def update_user(elements_to_update, current_user):
 
         if 'password' in list(elements_to_update.keys()):
             user.password = elements_to_update['password']
+
+        if 'description' in list(elements_to_update.keys()):
+            user.description = elements_to_update['description']
 
         db.session.commit()
         return True
