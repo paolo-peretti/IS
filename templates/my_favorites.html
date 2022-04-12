@@ -84,7 +84,7 @@
 
             <div class="row">
 
-            <div class="col-sm-3" >
+            <div class="col-sm-2" >
 
 <!--                sending a message requires the id of the owner-->
 
@@ -93,20 +93,29 @@
                 </div>
 
 
-            <div class="col-sm-3" >
+            <div class="col-sm-2" style="margin-left:5%;" >
 
 <!--                sending a message requires the id of the owner-->
                 <a href="{{ url_for('write_review',listing_id=item[0][0]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Write Review</a>
 
 
                 </div>
-            <div class="col-sm-3" >
+            <div class="col-sm-2" style="margin-left:5%;">
 
 <!--                sending a message requires the id of the owner-->
                 <a href="{{ url_for('read_reviews',listing_id=item[0][0]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">Read Reviews</a>
 
 
                 </div>
+                <div class="col-sm-2" style="margin-left:5%;" >
+
+<!--                sending a message requires the id of the owner-->
+                <a href="{{ url_for('view_roommates',listing_id=item[0][0]) }}"  class="btn btn-primary" style="margin-top:30%;margin-left:30%;">View Roommates</a>
+
+
+                </div>
+
+
                 </div>
 
 

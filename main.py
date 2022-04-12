@@ -708,6 +708,83 @@ def update_listing(listing_id):
 
 
 
+@app.route('/view_roommates/<listing_id>', methods=['POST', 'GET'])
+@login_required
+def view_roommates(listing_id):
+
+    check_listing_db, listing_info, listing = get_listing_info(listing_id)
+
+    if check_listing_db:
+
+        if request.method == 'POST':
+
+            username = request.form["username"]
+
+            if username == '':
+                msg = 'Missing username.'
+                flash(msg, 'message')
+            else:
+                found_user = User.query.filter_by(username=username).first()
+
+                if found_user:
+
+                    status = add_roommate(found_user.id, listing_id)
+
+                    if status:
+                        msg = 'You have added successfully the user as roommate!'
+                        flash(msg, 'message')
+                    else:
+                        msg = 'Something went wrong, please try again.'
+                        flash(msg, 'message')
+
+                else:
+                    msg = 'This username is not found. Please check you have written it correctly.'
+                    flash(msg, 'message')
+
+            roommates = get_roommates_of_listing(listing_id)
+            return render_template('view_roommates.html', items=roommates, listing=listing)
+
+
+        else:
+
+            roommates = get_roommates_of_listing(listing_id)
+            # print(roommates)
+            # users.id, users.username, users.name, users.email, users.description, roommates.id
+
+            return render_template('view_roommates.html', items=roommates, listing=listing)
+
+
+    else:
+        flash('Something went wrong, please try again.', 'error')
+        return render_template('base.html')
+
+
+
+@app.route('/delete_roommate/<roommate_id>')
+@login_required
+def delete_roommate(roommate_id):
+
+    found_roommate = Roommate.query.filter_by(id=roommate_id).first()
+
+    if found_roommate:
+        listing_id=found_roommate.listing_ID
+        if delete_roommate_from_listing(roommate_id):
+            flash('This roommate is deleted successfully!', 'info')
+        else:
+            flash('Something went wrong, please try again.', 'error')
+
+        return redirect(url_for("view_roommates", listing_id=listing_id))
+    else:
+        flash('Something went wrong, please try again.', 'error')
+        return render_template('base.html')
+
+
+
+
+
+
+
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
 

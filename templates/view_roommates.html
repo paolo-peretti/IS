@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<h2 style="text-align:center;margin-top:40px;margin-bottom:40px;">Roommates</h2>
+
+
+<!--Accordion-->
+
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-info" role="alert">
+            {{msg}}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+{% if current_user.id==listing.owner_id %}
+    <form action="#" method="post">
+        <div class='row' style="width:30%;margin-top:5%;margin-bottom:5%;margin-left:35%;margin-right:35%;">
+        <div class='col-xl'>
+
+            <input type="text" class="form-control" placeholder="roommate" name="username">
+
+        </div>
+
+        <div class='col-sm-2'>
+            <button type="submit" class="btn btn-info">Add</button>
+        </div>
+            </div>
+    </form>
+
+{% endif %}
+
+
+
+<div id="search-box" style="margin-top:20px;margin-left:15%;margin-right:15%;margin-bottom:20px;background:#f4f2f4;">
+
+    {% if items != undefined %}
+
+        <div style="padding:0.1%;">
+    {% if items != [] %}
+        {% for item in items %}
+
+        <hr>
+
+        <div class="row" style="margin-bottom:30px;margin-top:30px;width:80%;margin-left:10%;margin-right:10%;">
+
+            {% if item[0] == current_user.id %}
+            <div class="col-sm-1" >
+               <h5>Me</h5>
+
+                </div>
+            {% else %}
+            <div class="col-sm-1" >
+               <h5>User: {{ item[1] }}</h5>
+                <h7>Name: {{ item[2] }}</h7>
+                <h7>Mail: {{ item[3] }}</h7>
+
+                </div>
+            {% endif %}
+
+
+
+            <div class="col-xl" style="margin-left:10%;">
+                <label>Description : </label>
+                <p>{{ item[4] }}</p>
+
+                </div>
+
+
+            {% if current_user.id==listing.owner_id %}
+            <div class="col-sm-3" >
+                <a href="{{ url_for('delete_roommate',roommate_id=item[5]) }}"  class="btn btn-primary" style="margin-left:30%;">Delete Roommate</a>
+
+            </div>
+
+            {% else %}
+                {% if item[0] != current_user.id %}
+                <div class="col-sm-3" >
+
+    <!--                sending a message requires the id of the reviewer-->
+
+                    <a href="{{ url_for('chats',interlocutor=item[0]) }}"  class="btn btn-primary" style="margin-left:30%;">Contact User</a>
+
+                    </div>
+                {% endif %}
+            {% endif %}
+
+
+
+
+
+
+        </div>
+        <hr>
+
+        <div></div>
+
+
+
+        {% endfor %}
+    {% else %}
+    <div style="margin-right: 20%;margin-left:20%;color:red;">
+        <h3 >No roommates for this listing!</h3>
+    </div>
+    {% endif %}
+
+    </div>
+
+    {% endif %}
+
+    </div>
+
+
+
+
+{% endblock %}

@@ -1,7 +1,7 @@
 
 from cryptography.fernet import Fernet
 
-from models import User, Listing, Like
+from models import User, Listing, Like, Roommate
 from extensions import db
 import re
 import random
@@ -82,7 +82,15 @@ def add_like_to_listing(listing_id, user_id):
     except Exception:
         return False
 
+def add_roommate(user_id, listing_id):
 
+    try:
+        roommate = Roommate(user_id, listing_id)
+        db.session.add(roommate)
+        db.session.commit()
+        return True
+    except Exception:
+        return False
 
 
 def delete_like_to_listing(listing_id, user_id):
@@ -479,6 +487,8 @@ def add_user(info_user):
 
 
 
+
+
 def update_user(elements_to_update, current_user):
 
 
@@ -614,3 +624,40 @@ def get_reviews_of_listing(listing_ID):
         pass
 
     return results
+
+
+
+def get_roommates_of_listing(listing_ID):
+
+    results = []
+
+    try:
+        query = 'SELECT users.id, users.username, users.name, users.email, users.description, roommates.id '
+        query += 'FROM roommates INNER JOIN users ON roommates."user_ID" = users.id '
+        query += 'WHERE roommates."listing_ID"'
+        query += "= '" + str(listing_ID) + "' ;"
+
+        result_query = db.engine.execute(query)
+        results = result_query.fetchall()
+        # print(results)
+
+    except Exception:
+        pass
+
+    return results
+
+
+def delete_roommate_from_listing(roommate_id):
+
+    try:
+        query = "DELETE FROM roommates "
+        query += 'WHERE '
+        query += 'roommates.id = '
+        query += "" + str(roommate_id) + " "
+
+        db.engine.execute(query)
+        db.session.commit()
+
+        return True
+    except Exception:
+        return False

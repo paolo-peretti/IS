@@ -96,3 +96,16 @@ class Like(db.Model):
     def __init__(self, user_ID, listing_ID):
         self.user_ID = user_ID
         self.listing_ID = listing_ID
+
+
+
+class Roommate(db.Model):
+    __tablename__ = 'roommates'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_ID = db.Column(db.Integer, nullable=False) # user
+    listing_ID = db.Column(db.Integer, nullable=False) # could be the listing
+
+    def __init__(self, user_ID, listing_ID):
+        self.user_ID = user_ID
+        self.listing_ID = listing_ID
