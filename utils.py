@@ -201,7 +201,6 @@ def get_listings(search_query):
 
     # search_query = [district, type_room, min, max, features]
 
-
     check_for_AND_sintax = False
 
     query = "SELECT * FROM listings "

@@ -21,6 +21,42 @@ def load_user(user_id):
 
 
 
+@app.route('/<search_query>')
+@login_required
+def back_to_search(search_query):
+
+    search_query_splitted = search_query[1:-1].split(', ')
+    search_query = []
+    for val in search_query_splitted:
+        print(val[-1])
+        if val[-1] != ']':
+            search_query.append(str(val[1:-1]))
+        else:
+            f = str(val[1:-1]).split(',')
+            features = []
+            print(f)
+            for feature in f:
+                print(feature)
+                features.append(str(feature[1:-1]))
+
+
+            search_query.append(features)
+
+    print(search_query)
+
+
+    items = get_listings(search_query)
+
+    try:
+        user_favorites = get_my_favorites(current_user.id)
+    except Exception:
+        # print('maybe the user is not logged in!')
+        user_favorites = []
+
+    return render_template('index.html', items=items, all_districts=all_districts, user_favorites=user_favorites,
+                           search_query=search_query)
+
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
@@ -80,13 +116,7 @@ def index():
             # print('maybe the user is not logged in!')
             user_favorites=[]
 
-        # print(current_user.is_authenticated)
-
-        # if "user" in session:
-        #     user = session["user"]
-        #     return render_template('index.html', usr=user, items=items, all_districts=all_districts)
-
-        return render_template('index.html', items=items, all_districts=all_districts, user_favorites=user_favorites)
+        return render_template('index.html', items=items, all_districts=all_districts, user_favorites=user_favorites, search_query=search_query)
 
 
     else:
@@ -96,7 +126,7 @@ def index():
         #     return render_template('index.html', usr=user, all_districts=all_districts)
 
 
-        return render_template('index.html', all_districts=all_districts)
+        return render_template('index.html', all_districts=all_districts, search_query=[])
 
 
 @app.route('/like/<listing_id>', methods=['GET'])
@@ -113,7 +143,7 @@ def like(listing_id):
     else:
         flash('Something went wrong, please try again.', 'error')
 
-    return redirect(url_for('my_favorites')) #post
+    return redirect(url_for('my_favorites'))
 
 
 @app.route('/unlike/<listing_id>', methods=['GET'])
@@ -214,16 +244,16 @@ def write_review(listing_id):
 
 
 
-@app.route('/read_reviews/<listing_id>', methods=['GET'])
+@app.route('/read_reviews/<listing_id>/<search_query>', methods=['GET'])
 @login_required
-def read_reviews(listing_id):
+def read_reviews(listing_id, search_query):
 
     reviews = get_reviews_of_listing(int(listing_id))
-    # print(reviews)
-
     # reviews[0] = users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews.review_ID
 
-    return render_template('read_reviews.html', items=reviews)
+    return render_template('read_reviews.html', items=reviews, search_query=search_query)
+
+
 
 
 
