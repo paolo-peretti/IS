@@ -479,6 +479,7 @@ def check_password_update(info_user, current_user):
 
 
 
+
 def add_user(info_user):
 
     username, email, password, password_confirm, name, type_user = info_user
@@ -489,8 +490,6 @@ def add_user(info_user):
         return True
     except Exception:
         return False
-
-
 
 
 
@@ -520,6 +519,8 @@ def update_user(elements_to_update, current_user):
         return True
     except Exception:
         return False
+
+
 
 
 

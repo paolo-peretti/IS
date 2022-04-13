@@ -7,6 +7,9 @@ from extensions import app, db
 from utils import *
 from models import User, Message, Listing, Review
 
+
+# LOGIN MANAGER section
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -20,14 +23,15 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# HOME section
+
+# @app.route('/', methods=['POST', 'GET'])
+# def home():
+#     return redirect(url_for('index',search_query='search'))
 
 @app.route('/', methods=['POST', 'GET'])
-def home():
-    return redirect(url_for('index',search_query='search'))
-
-
 @app.route('/<search_query>', methods=['POST', 'GET'])
-def index(search_query):
+def index(search_query=None):
 
     if request.method == 'POST':
 
@@ -93,22 +97,28 @@ def index(search_query):
         # after the user visited the read_reviews or the view_roommates he/she can back to the search
         # so the system is memorizing the search_query in order to back to the search
 
-        if search_query[0] == '[': # check if the user have been searched something before
 
-            search_query = from_string_to_list(search_query)
-            items = get_listings(search_query)
+        try:
+            if '[' in search_query: # check if the user have been searched something before
 
-            try:
-                user_favorites = get_my_favorites(current_user.id)
-            except Exception:
-                # print('maybe the user is not logged in!')
-                user_favorites = []
+                search_query = from_string_to_list(search_query)
+                items = get_listings(search_query)
 
-            return render_template('index.html', items=items, all_districts=all_districts,
-                                   user_favorites=user_favorites, search_query=search_query)
-        else:
+                try:
+                    user_favorites = get_my_favorites(current_user.id)
+                except Exception:
+                    # print('maybe the user is not logged in!')
+                    user_favorites = []
+
+                return render_template('index.html', items=items, all_districts=all_districts,
+                                       user_favorites=user_favorites, search_query=search_query)
+            else:
+                return render_template('index.html', all_districts=all_districts, search_query=[])
+        except Exception:
             return render_template('index.html', all_districts=all_districts, search_query=[])
 
+
+# LIKE section
 
 @app.route('/like/<listing_id>', methods=['GET'])
 @login_required
@@ -141,6 +151,9 @@ def unlike(listing_id):
     return redirect(url_for('my_favorites'))
 
 
+
+
+
 @app.route('/my_favorites', methods=['GET'])
 @login_required
 def my_favorites():
@@ -165,7 +178,7 @@ def my_favorites():
 
 
 
-
+# REVIEW section
 
 @app.route('/write_review/<listing_id>', methods=['POST', 'GET'])
 @login_required
@@ -223,8 +236,6 @@ def write_review(listing_id):
 
 
 
-
-
 @app.route('/read_reviews/<listing_id>/<search_query>', methods=['GET'])
 @login_required
 def read_reviews(listing_id, search_query):
@@ -233,8 +244,6 @@ def read_reviews(listing_id, search_query):
     # reviews[0] = users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews.review_ID
 
     return render_template('read_reviews.html', items=reviews, search_query=search_query)
-
-
 
 
 
@@ -259,151 +268,7 @@ def delete_review(review_id):
 
 
 
-
-
-
-
-
-@app.route('/update_user_informations', methods=['POST', 'GET'])
-@login_required
-def update_user_informations():
-
-    if request.method == 'POST':
-
-
-        try:
-
-            username = request.form["username"]
-            email = request.form["email"]
-            name = request.form["name"]
-
-            try:
-                type_user = request.form['type_user']
-            except Exception:
-                print('something went wrong')
-                type_user = 'searcher'
-
-            check_info = True
-
-        except Exception:
-
-            check_info = False
-
-
-
-        try:
-
-            old_password = request.form["old_password"]
-            password = request.form["password"]
-            password_confirm = request.form["confirm_password"]
-
-            check_pass = True
-
-        except Exception:
-
-            check_pass = False
-
-
-        try:
-
-            description = request.form["description"]
-            # print(description)
-
-            check_description = True
-
-        except Exception:
-
-            check_description = False
-
-
-        if check_info:
-
-
-            info_user = [username, email, name, type_user]
-
-            msg, elements_to_update = check_update_info(info_user, current_user)
-
-            if msg == '':
-
-                status = update_user(elements_to_update, current_user)
-
-                if status:
-                    flash('You have update your informations successfully!', 'info')
-                else:
-                    flash('Something went wrong, please try again.', 'error')
-
-            else:
-
-                flash(msg, 'message')
-
-
-            return render_template('login.html', type='update')
-
-
-        if check_pass:
-
-            info_user = [old_password, password, password_confirm]
-
-            msg, elements_to_update = check_password_update(info_user, current_user)
-
-            if msg == '':
-
-                status = update_user(elements_to_update, current_user)
-
-                if status:
-
-                    flash('You have update your password successfully!', 'info')
-
-                else:
-
-                    flash('Something went wrong, please try again.', 'error')
-
-            else:
-
-                flash(msg, 'message')
-
-
-            return render_template('login.html', type='update')
-
-
-        if check_description:
-
-
-            if description != '':
-
-                if description != current_user.description:
-
-                    elements_to_update = {}
-                    elements_to_update['description'] = description
-
-                    status = update_user(elements_to_update, current_user)
-
-                    if status:
-
-                        flash('You have set a description successfully!', 'info')
-
-                    else:
-
-                        flash('Something went wrong, please try again.', 'error')
-                else:
-                    flash('You have not changed anything, please try again.', 'error')
-            else:
-                flash('You have to write something here!', 'error')
-
-
-            return render_template('login.html', type='update')
-
-        flash('Something went wrong, please try again.', 'error')
-        return render_template('login.html', type='update')
-
-
-
-    else:
-
-        return render_template('login.html', type='update')
-
-
-
+# CHAT section
 
 @app.route('/chats/<interlocutor>', methods=['POST', 'GET'])
 @login_required
@@ -484,14 +349,15 @@ def chats(interlocutor):
 
 
 
+
+# LISTING section
+
 @app.route('/my_listings', methods=['GET'])
 @login_required
 def my_listings():
 
     listings = get_my_listings(current_user)
     return render_template('my_listings.html', items=listings)
-
-
 
 
 
@@ -719,6 +585,8 @@ def update_listing(listing_id):
 
 
 
+# ROOMMATE section
+
 @app.route('/view_roommates/<listing_id>/<search_query>', methods=['POST', 'GET'])
 @login_required
 def view_roommates(listing_id, search_query):
@@ -791,9 +659,7 @@ def delete_roommate(roommate_id):
 
 
 
-
-
-
+# USER section
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -811,7 +677,7 @@ def login():
             login_user(user)
 
 
-            return redirect(url_for("home"))
+            return redirect(url_for("index"))
         else:
             flash(msg, 'message')
             return render_template('login.html', type='signIn')
@@ -864,6 +730,144 @@ def register():
 
 
 
+@app.route('/update_user_informations', methods=['POST', 'GET'])
+@login_required
+def update_user_informations():
+
+    if request.method == 'POST':
+
+
+        try:
+
+            username = request.form["username"]
+            email = request.form["email"]
+            name = request.form["name"]
+
+            try:
+                type_user = request.form['type_user']
+            except Exception:
+                print('something went wrong')
+                type_user = 'searcher'
+
+            check_info = True
+
+        except Exception:
+
+            check_info = False
+
+
+
+        try:
+
+            old_password = request.form["old_password"]
+            password = request.form["password"]
+            password_confirm = request.form["confirm_password"]
+
+            check_pass = True
+
+        except Exception:
+
+            check_pass = False
+
+
+        try:
+
+            description = request.form["description"]
+            # print(description)
+
+            check_description = True
+
+        except Exception:
+
+            check_description = False
+
+
+        if check_info:
+
+
+            info_user = [username, email, name, type_user]
+
+            msg, elements_to_update = check_update_info(info_user, current_user)
+
+            if msg == '':
+
+                status = update_user(elements_to_update, current_user)
+
+                if status:
+                    flash('You have update your informations successfully!', 'info')
+                else:
+                    flash('Something went wrong, please try again.', 'error')
+
+            else:
+
+                flash(msg, 'message')
+
+
+            return render_template('login.html', type='update')
+
+
+        if check_pass:
+
+            info_user = [old_password, password, password_confirm]
+
+            msg, elements_to_update = check_password_update(info_user, current_user)
+
+            if msg == '':
+
+                status = update_user(elements_to_update, current_user)
+
+                if status:
+
+                    flash('You have update your password successfully!', 'info')
+
+                else:
+
+                    flash('Something went wrong, please try again.', 'error')
+
+            else:
+
+                flash(msg, 'message')
+
+
+            return render_template('login.html', type='update')
+
+
+        if check_description:
+
+
+            if description != '':
+
+                if description != current_user.description:
+
+                    elements_to_update = {}
+                    elements_to_update['description'] = description
+
+                    status = update_user(elements_to_update, current_user)
+
+                    if status:
+
+                        flash('You have set a description successfully!', 'info')
+
+                    else:
+
+                        flash('Something went wrong, please try again.', 'error')
+                else:
+                    flash('You have not changed anything, please try again.', 'error')
+            else:
+                flash('You have to write something here!', 'error')
+
+
+            return render_template('login.html', type='update')
+
+        flash('Something went wrong, please try again.', 'error')
+        return render_template('login.html', type='update')
+
+
+
+    else:
+
+        return render_template('login.html', type='update')
+
 
 
 
@@ -873,9 +877,11 @@ def register():
 def logout():
     # print(current_user)
     logout_user()
-    return redirect(url_for("home"))
+    return redirect(url_for("index"))
 
 
+
+# ERROR section
 
 @app.errorhandler(404)
 def page_not_found(e):

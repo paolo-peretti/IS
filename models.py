@@ -2,6 +2,7 @@ from flask_login import UserMixin
 
 from extensions import db
 
+from utils import *
 
 
 class User(db.Model, UserMixin):
@@ -25,6 +26,8 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+
 
 
 
