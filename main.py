@@ -627,7 +627,7 @@ def view_roommates(listing_id, search_query=None):
         return render_template('base.html')
 
 
-
+@app.route('/delete_roommate/<roommate_id>')
 @app.route('/delete_roommate/<roommate_id>/<search_query>')
 @login_required
 def delete_roommate(roommate_id,search_query=None):

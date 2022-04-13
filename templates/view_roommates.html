@@ -82,8 +82,12 @@
 
             {% if current_user.id==listing.owner_id %}
             <div class="col-sm-3" >
+                {% if search_query != None %}
                 <a href="{{ url_for('delete_roommate',roommate_id=item[5], search_query=search_query) }}"  class="btn btn-primary" style="margin-left:30%;">Delete Roommate</a>
+                {% else %}
+                <a href="{{ url_for('delete_roommate',roommate_id=item[5]) }}"  class="btn btn-primary" style="margin-left:30%;">Delete Roommate</a>
 
+                {% endif %}
             </div>
 
             {% else %}
