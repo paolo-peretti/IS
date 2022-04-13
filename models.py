@@ -2,7 +2,7 @@ from flask_login import UserMixin
 
 from extensions import db
 
-from utils import *
+
 
 
 class User(db.Model, UserMixin):

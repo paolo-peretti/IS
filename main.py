@@ -3,9 +3,9 @@ from flask import render_template, request, session, flash, url_for, redirect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 
-from extensions import app, db
-from utils import *
-from models import User, Message, Listing, Review
+from extensions import app
+from database_functions import *
+
 
 
 # LOGIN MANAGER section
@@ -25,9 +25,6 @@ def load_user(user_id):
 
 # HOME section
 
-# @app.route('/', methods=['POST', 'GET'])
-# def home():
-#     return redirect(url_for('index',search_query='search'))
 
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/<search_query>', methods=['POST', 'GET'])
@@ -113,9 +110,9 @@ def index(search_query=None):
                 return render_template('index.html', items=items, all_districts=all_districts,
                                        user_favorites=user_favorites, search_query=search_query)
             else:
-                return render_template('index.html', all_districts=all_districts, search_query=[])
+                return render_template('index.html', all_districts=all_districts, search_query=None)
         except Exception:
-            return render_template('index.html', all_districts=all_districts, search_query=[])
+            return render_template('index.html', all_districts=all_districts, search_query=None)
 
 
 # LIKE section
@@ -207,16 +204,14 @@ def write_review(listing_id):
                 listing = Listing.query.filter_by(house_ID=listing_id).first()
 
                 if listing:
-                    try:
-                        review = Review(int(current_user.id), int(listing_id), review, int(num_flag))
-                        db.session.add(review)
-                        db.session.commit()
+                    check_review = add_review(current_user,listing_id, review, num_flag)
+
+                    if check_review:
 
                         flash('The review is added successfully!', 'message')
                         check_review=True
 
-
-                    except Exception:
+                    else:
                         flash('Something went wrong! Please try again later.', 'message')
                 else:
                     flash('Something went wrong! Please try again later.', 'message')
@@ -238,7 +233,7 @@ def write_review(listing_id):
 
 @app.route('/read_reviews/<listing_id>/<search_query>', methods=['GET'])
 @login_required
-def read_reviews(listing_id, search_query):
+def read_reviews(listing_id, search_query=None):
 
     reviews = get_reviews_of_listing(int(listing_id))
     # reviews[0] = users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews.review_ID
@@ -286,13 +281,9 @@ def chats(interlocutor):
             owner = User.query.filter_by(username=interlocutor).first()
 
             if owner:
-                try:
-                    msg = Message(current_user.id, owner.id, message)
-                    db.session.add(msg)
-                    db.session.commit()
+                status = add_message(current_user, owner, message)
 
-
-                except Exception:
+                if status == False:
                     flash('Something went wrong! Please try again later.', 'message')
             else:
                 flash('Something went wrong! Please try again later.', 'message')
@@ -589,7 +580,7 @@ def update_listing(listing_id):
 
 @app.route('/view_roommates/<listing_id>/<search_query>', methods=['POST', 'GET'])
 @login_required
-def view_roommates(listing_id, search_query):
+def view_roommates(listing_id, search_query=None):
 
     check_listing_db, listing_info, listing = get_listing_info(listing_id)
 
@@ -638,9 +629,9 @@ def view_roommates(listing_id, search_query):
 
 
 
-@app.route('/delete_roommate/<roommate_id>')
+@app.route('/delete_roommate/<roommate_id>/<search_query>')
 @login_required
-def delete_roommate(roommate_id):
+def delete_roommate(roommate_id,search_query=None):
 
     found_roommate = Roommate.query.filter_by(id=roommate_id).first()
 
@@ -651,7 +642,7 @@ def delete_roommate(roommate_id):
         else:
             flash('Something went wrong, please try again.', 'error')
 
-        return redirect(url_for("view_roommates", listing_id=listing_id))
+        return redirect(url_for("view_roommates", listing_id=listing_id, search_query=search_query))
     else:
         flash('Something went wrong, please try again.', 'error')
         return render_template('base.html')

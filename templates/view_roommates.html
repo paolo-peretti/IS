@@ -19,16 +19,16 @@
   {% endwith %}
 
 
-{% if search_query != 'none'%}
+{% if search_query != None %}
     <div >
     <!--    back to search-->
-        <a href="{{ url_for('index',search_query=search_query) }}"  class="btn btn-primary" style="margin-top:2%;margin-bottom:8%;margin-left:15%;">Back to Search</a>
+        <a href="{{ url_for('index',search_query=search_query) }}"  class="btn btn-primary" style="margin-top:2%;margin-bottom:5%;margin-left:15%;">Back to Search</a>
     </div>
 {% endif %}
 
 {% if current_user.id==listing.owner_id %}
     <form action="#" method="post">
-        <div class='row' style="width:30%;margin-top:5%;margin-bottom:5%;margin-left:35%;margin-right:35%;">
+        <div class='row' style="width:30%;margin-top:1%;margin-bottom:1%;margin-left:35%;margin-right:35%;">
         <div class='col-xl'>
 
             <input type="text" class="form-control" placeholder="roommate" name="username">
@@ -82,7 +82,7 @@
 
             {% if current_user.id==listing.owner_id %}
             <div class="col-sm-3" >
-                <a href="{{ url_for('delete_roommate',roommate_id=item[5]) }}"  class="btn btn-primary" style="margin-left:30%;">Delete Roommate</a>
+                <a href="{{ url_for('delete_roommate',roommate_id=item[5], search_query=search_query) }}"  class="btn btn-primary" style="margin-left:30%;">Delete Roommate</a>
 
             </div>
 
