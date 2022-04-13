@@ -21,44 +21,13 @@ def load_user(user_id):
 
 
 
-@app.route('/<search_query>')
-@login_required
-def back_to_search(search_query):
-
-    search_query_splitted = search_query[1:-1].split(', ')
-    search_query = []
-    for val in search_query_splitted:
-        print(val[-1])
-        if val[-1] != ']':
-            search_query.append(str(val[1:-1]))
-        else:
-            f = str(val[1:-1]).split(',')
-            features = []
-            print(f)
-            for feature in f:
-                print(feature)
-                features.append(str(feature[1:-1]))
-
-
-            search_query.append(features)
-
-    print(search_query)
-
-
-    items = get_listings(search_query)
-
-    try:
-        user_favorites = get_my_favorites(current_user.id)
-    except Exception:
-        # print('maybe the user is not logged in!')
-        user_favorites = []
-
-    return render_template('index.html', items=items, all_districts=all_districts, user_favorites=user_favorites,
-                           search_query=search_query)
-
-
 @app.route('/', methods=['POST', 'GET'])
-def index():
+def home():
+    return redirect(url_for('index',search_query='search'))
+
+
+@app.route('/<search_query>', methods=['POST', 'GET'])
+def index(search_query):
 
     if request.method == 'POST':
 
@@ -121,12 +90,22 @@ def index():
 
     else:
 
-        # if "user" in session:
-        #     user = session["user"]
-        #     return render_template('index.html', usr=user, all_districts=all_districts)
 
+        if search_query[0] == '[':
 
-        return render_template('index.html', all_districts=all_districts, search_query=[])
+            search_query = from_string_to_list(search_query)
+            items = get_listings(search_query)
+
+            try:
+                user_favorites = get_my_favorites(current_user.id)
+            except Exception:
+                # print('maybe the user is not logged in!')
+                user_favorites = []
+
+            return render_template('index.html', items=items, all_districts=all_districts,
+                                   user_favorites=user_favorites, search_query=search_query)
+        else:
+            return render_template('index.html', all_districts=all_districts, search_query=[])
 
 
 @app.route('/like/<listing_id>', methods=['GET'])

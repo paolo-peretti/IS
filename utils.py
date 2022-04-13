@@ -1,3 +1,4 @@
+import ast
 
 from cryptography.fernet import Fernet
 
@@ -10,6 +11,11 @@ from costants import *
 
 
 
+
+def from_string_to_list(text):
+    search_query = ast.literal_eval(text)
+
+    return search_query
 
 
 def get_feature_value(request, feature):
