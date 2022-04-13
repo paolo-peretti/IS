@@ -90,8 +90,10 @@ def index(search_query):
 
     else:
 
+        # after the user visited the read_reviews or the view_roommates he/she can back to the search
+        # so the system is memorizing the search_query in order to back to the search
 
-        if search_query[0] == '[':
+        if search_query[0] == '[': # check if the user have been searched something before
 
             search_query = from_string_to_list(search_query)
             items = get_listings(search_query)
@@ -717,9 +719,9 @@ def update_listing(listing_id):
 
 
 
-@app.route('/view_roommates/<listing_id>', methods=['POST', 'GET'])
+@app.route('/view_roommates/<listing_id>/<search_query>', methods=['POST', 'GET'])
 @login_required
-def view_roommates(listing_id):
+def view_roommates(listing_id, search_query):
 
     check_listing_db, listing_info, listing = get_listing_info(listing_id)
 
@@ -751,7 +753,7 @@ def view_roommates(listing_id):
                     flash(msg, 'message')
 
             roommates = get_roommates_of_listing(listing_id)
-            return render_template('view_roommates.html', items=roommates, listing=listing)
+            return render_template('view_roommates.html', items=roommates, listing=listing, search_query=search_query)
 
 
         else:
@@ -759,8 +761,7 @@ def view_roommates(listing_id):
             roommates = get_roommates_of_listing(listing_id)
             # print(roommates)
             # users.id, users.username, users.name, users.email, users.description, roommates.id
-
-            return render_template('view_roommates.html', items=roommates, listing=listing)
+            return render_template('view_roommates.html', items=roommates, listing=listing, search_query=search_query)
 
 
     else:
@@ -810,7 +811,7 @@ def login():
             login_user(user)
 
 
-            return redirect(url_for("index"))
+            return redirect(url_for("home"))
         else:
             flash(msg, 'message')
             return render_template('login.html', type='signIn')
@@ -872,7 +873,7 @@ def register():
 def logout():
     # print(current_user)
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("home"))
 
 
 

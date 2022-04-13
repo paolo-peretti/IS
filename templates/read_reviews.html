@@ -20,13 +20,12 @@
 
 
 
-
-<div >
-<!--    back to search-->
-    <a href="{{ url_for('index',search_query=search_query) }}"  class="btn btn-primary" style="margin-top:30px;margin-left:30%;">Back to Search</a>
-</div>
-
-
+{% if search_query != 'none'%}
+    <div >
+    <!--    back to search-->
+        <a href="{{ url_for('index',search_query=search_query) }}"  class="btn btn-primary" style="margin-top:2%;margin-bottom:8%;margin-left:15%;">Back to Search</a>
+    </div>
+{% endif %}
 
 <div id="search-box" style="margin-top:20px;margin-left:15%;margin-right:15%;margin-bottom:20px;background:#f4f2f4;">
 
