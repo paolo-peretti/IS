@@ -229,7 +229,7 @@ def write_review(listing_id):
         return render_template('write_review.html')
 
 
-
+@app.route('/read_reviews/<listing_id>', methods=['GET'])
 @app.route('/read_reviews/<listing_id>/<search_query>', methods=['GET'])
 @login_required
 def read_reviews(listing_id, search_query=None):
@@ -576,7 +576,7 @@ def update_listing(listing_id):
 
 
 # ROOMMATE section
-
+@app.route('/view_roommates/<listing_id>', methods=['POST', 'GET'])
 @app.route('/view_roommates/<listing_id>/<search_query>', methods=['POST', 'GET'])
 @login_required
 def view_roommates(listing_id, search_query=None):
