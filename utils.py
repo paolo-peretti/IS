@@ -3,7 +3,7 @@ import ast
 from cryptography.fernet import Fernet
 
 from models import User, Listing
-
+from costants import *
 import re
 
 
@@ -179,6 +179,9 @@ def check_update_info(info_user, current_user):
     return msg, elements_to_update
 
 
+
+
+
 def check_update_listing(search_query, listing):
 
     address, district, types_str, price, features_str = search_query
@@ -243,4 +246,13 @@ def get_listing_info(listing_id):
     except Exception:
         return False, [], listing
 
+
+
+def get_image(result_id):
+    if result_id < len(all_images)-1:
+        return all_images[result_id]
+    while True:
+        result_id = int(result_id/len(all_images))
+        if result_id < len(all_images)-1:
+            return all_images[result_id]
 

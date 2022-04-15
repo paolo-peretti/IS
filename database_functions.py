@@ -1,7 +1,7 @@
 from models import Message, Like, Roommate, Review
 from utils import *
 import random
-from costants import *
+
 from extensions import db
 # This file contains many functions that modify the database
 
@@ -190,8 +190,9 @@ def get_listings(search_query):
 
             if check_features and check_types:
                 # listings += [result]
-                random_image_index = random.randrange(len(all_images))
-                listings_with_images.append((result, all_images[random_image_index]))
+                img = get_image(result[0])
+
+                listings_with_images.append((result, img))
 
 
 
@@ -200,8 +201,9 @@ def get_listings(search_query):
         listings = results
 
         for listing in listings:
-            random_image_index = random.randrange(len(all_images))
-            listings_with_images.append((listing, all_images[random_image_index]))
+            img = get_image(listing[0])
+
+            listings_with_images.append((listing, img))
 
 
 
@@ -222,8 +224,8 @@ def get_my_listings(current_user):
     listings_with_images = []
 
     for listing in listings:
-        random_image_index = random.randrange(len(all_images))
-        listings_with_images.append((listing, all_images[random_image_index]))
+        img = get_image(listing[0])
+        listings_with_images.append((listing, img))
 
 
     return listings_with_images
