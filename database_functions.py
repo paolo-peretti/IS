@@ -1,6 +1,5 @@
 from models import Message, Like, Roommate, Review
 from utils import *
-import random
 
 from extensions import db
 # This file contains many functions that modify the database
