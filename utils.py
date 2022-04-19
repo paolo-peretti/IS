@@ -248,6 +248,8 @@ def get_listing_info(listing_id):
 
 
 
+
+
 def get_image(result_id):
 
     # count digits of integer
