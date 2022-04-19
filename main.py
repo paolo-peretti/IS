@@ -24,7 +24,7 @@ def load_user(user_id):
 
 # HOME section
 
-
+# this method is called using 2 routes
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/<search_query>', methods=['POST', 'GET'])
 def index(search_query=None):
@@ -45,7 +45,7 @@ def index(search_query=None):
             district=''
 
         # features
-        features=[]
+        features=[] # in this list we've put all values getted from radio and checked inputs
         try:
             bathroom = request.form["bathroom"] # private bathroom or shared bathroom
             features.append(bathroom)
@@ -61,7 +61,7 @@ def index(search_query=None):
         # features
 
         for feature in all_features_with_checkbox:
-            value = get_feature_value(request, feature)
+            value = get_feature_value(request, feature) # this methos is called to check if the form is checked.
             if value != '':
                 features.append(value)
 
@@ -77,12 +77,12 @@ def index(search_query=None):
 
         search_query = [district, type_room, min_price, max_price, features]
 
-        items = get_listings(search_query)
+        items = get_listings(search_query) # this method is used to get all the listings that respect the search query.
 
         try:
-            user_favorites = get_my_favorites(current_user.id)
+            user_favorites = get_my_favorites(current_user.id) # this method is used to get all the users's favorites listings
         except Exception:
-            # print('maybe the user is not logged in!')
+            # maybe the user is not logged in!
             user_favorites=[]
 
         return render_template('index.html', items=items, all_districts=all_districts, user_favorites=user_favorites, search_query=search_query)
@@ -123,7 +123,8 @@ def like(listing_id):
     listings = get_my_favorites(current_user.id)
 
     if int(listing_id) not in listings:
-        if add_like_to_listing(listing_id, current_user.id):
+        if add_like_to_listing(listing_id, current_user.id): # we want to check that the element has been added
+
             flash('You have added this listing to your favorites listings!', 'info')
         else:
             flash('Something went wrong, please try again.', 'error')
@@ -166,7 +167,7 @@ def my_favorites():
         user_favorites = []
 
     favorite_listings = []
-    for item in items:
+    for item in items: # filter to prevent having random items in the favorites section
         if int(item[0][0]) in user_favorites:
             favorite_listings.append(item)
 
@@ -292,7 +293,7 @@ def chats(interlocutor):
             flash('You have to write something to send a message!', 'message')
 
 
-        messages = get_my_chats(current_user)
+        messages = get_my_chats(current_user) # get all the messages in which the current user is involved
         # session["messages"] = messages
 
 
@@ -438,7 +439,7 @@ def add_listing():
 
 
 
-        msg = msg_adding_listing(search_query)
+        msg = msg_adding_listing(search_query) # check if I can add the listing
 
 
 
@@ -707,7 +708,7 @@ def register():
                 # sending a 307 status code instead of 302 should tell the browser to preserve the used HTTP method
                 # and thus have the behaviour you're expecting. Your call to redirect would then look like this:
 
-                return redirect(url_for('login'), code=307)
+                return redirect(url_for('login'), code=307) # we want pass to the login in order to use the login manager
                 # return redirect(url_for("index"))
             else:
                 flash('Something went wrong, please try again.', 'error')
@@ -726,6 +727,9 @@ def update_user_informations():
 
     if request.method == 'POST':
 
+
+        # in this section we used 3 checks in order to prevent exceptions
+        # the user can now update one section at a time
 
         try:
 
@@ -776,6 +780,8 @@ def update_user_informations():
 
 
             info_user = [username, email, name, type_user]
+
+            # elements_to_update is a dictionary that allows us to trace which fields the user is modifing
 
             msg, elements_to_update = check_update_info(info_user, current_user)
 
@@ -866,7 +872,8 @@ def update_user_informations():
 @login_required
 def logout():
     # print(current_user)
-    logout_user()
+    logout_user() # this method is made available by the login manager
+
     return redirect(url_for("index"))
 
 
@@ -887,7 +894,7 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
+    db.create_all() # it creates all the tables and the database
+    app.run(debug=True) # I can run the server using this line of code
 
 

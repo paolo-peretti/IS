@@ -11,8 +11,10 @@ import math
 
 
 def from_string_to_list(text):
-    search_query = ast.literal_eval(text)
-
+    search_query = ast.literal_eval(text) # transform string to list
+    # es. '[1,2,3]'->[1,2,3]
+    # also in list of lists
+    # es. '[1,2,[3]]'->[1,2,[3]]
     return search_query
 
 
@@ -21,7 +23,7 @@ def get_feature_value(request, feature):
 
     try:
         feature_value = request.form[feature]
-        if 'on' in feature_value:
+        if 'on' in feature_value: # the value 'on' is setted only if the input is checked
             return feature
         else:
             return ''
@@ -46,7 +48,7 @@ def msg_adding_listing(search_query):
         msg = 'You have to choose the types of availability for the house!'
     else:
         try:
-            if isinstance(int(price), int):
+            if isinstance(int(price), int): # price needs to be an integer
                 msg = ''
         except Exception:
             msg = 'You have to put a valid value for the price!'
@@ -55,7 +57,7 @@ def msg_adding_listing(search_query):
 
 
 
-def decoding_password(password):
+def decoding_password(password): # we are using a library called Fernet in order to decode a string using a secret key
 
     key_pass = 'NyaskKIJZz-Y0cIV0g38qB0UWi_1T7SuG3nTUfhrjbU='
     key_pass = key_pass.encode()
@@ -70,7 +72,7 @@ def decoding_password(password):
 
 
 
-def encoding_password(password):
+def encoding_password(password): # we are using a library called Fernet in order to encode a string using a secret key
 
     key_pass = 'NyaskKIJZz-Y0cIV0g38qB0UWi_1T7SuG3nTUfhrjbU='
     key_pass = key_pass.encode()
@@ -86,7 +88,7 @@ def encoding_password(password):
 
 def check_email(email):
     # for validating an Email
-    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b' # this is a regular expression
     return re.fullmatch(regex, email)
 
 
@@ -137,11 +139,12 @@ def check_registration_info(info_user):
     return msg
 
 
+
 def check_update_info(info_user, current_user):
 
     username, email, name, type_user = info_user
     msg = ''
-    elements_to_update = {}
+    elements_to_update = {} # is a dictionary that allows us to trace which fields the user is modifing
 
 
     if username != '' and current_user.username != username:

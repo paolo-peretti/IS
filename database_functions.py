@@ -10,9 +10,9 @@ def add_user(info_user):
 
     username, email, password, password_confirm, name, type_user = info_user
     try:
-        usr = User(username, email, encoding_password(password), name, type_user, '')
-        db.session.add(usr)
-        db.session.commit()
+        usr = User(username, email, encoding_password(password), name, type_user, '') # the last position is the description of the user
+        db.session.add(usr) # adding this instance of User
+        db.session.commit() # confirm the changes on the database
         return True
     except Exception:
         return False
@@ -24,7 +24,7 @@ def update_user(elements_to_update, current_user):
     try:
         user = User.query.filter_by(id=current_user.id).first()
 
-
+        # we are updating the informations of the user instance in order to confirm the changes later
         if 'username' in list(elements_to_update.keys()):
             user.username = elements_to_update['username']
         if 'email' in list(elements_to_update.keys()):
@@ -162,7 +162,7 @@ def get_listings(search_query):
                     features = [features]
 
 
-
+                # this is a check for the features the user is searching for.
                 check_features = all(result in features for result in search_query[4])
 
 
@@ -218,7 +218,7 @@ def get_my_listings(current_user):
     query += "listings.owner_id = '" + str(current_user.id) + "' "
 
     result_query = db.engine.execute(query)
-    listings = result_query.fetchall()
+    listings = result_query.fetchall() # get all the results of the query
 
     listings_with_images = []
 
@@ -333,6 +333,7 @@ def get_my_chats(current_user):
         else:
             interlocutor_name = interlocutors[interlocutor_id]
 
+        # adding a key to the dictionary and a list of 1 value, or adding the value to the list related to the key
         chats.setdefault(interlocutor_name, []).append((int(msg[0]),int(msg[1]),msg[2]))
 
 
@@ -382,7 +383,7 @@ def get_reviews_of_listing(listing_ID):
 
     try:
         query = 'SELECT users.username, reviews."user_ID", reviews.text, reviews.num_flag, reviews."review_ID" '
-        query += 'FROM reviews INNER JOIN users ON reviews."user_ID" = users.id '
+        query += 'FROM reviews INNER JOIN users ON reviews."user_ID" = users.id ' # using the inner join we'll work on 2 tables
         query += 'WHERE reviews."listing_ID"'
         query += "= '" + str(listing_ID) + "' ;"
 
