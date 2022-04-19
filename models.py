@@ -102,7 +102,6 @@ class Like(db.Model):
 
 
 
-
 class Roommate(db.Model):
     __tablename__ = 'roommates'
 
