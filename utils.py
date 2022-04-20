@@ -100,13 +100,13 @@ def check_auth(username, password):
         msg = 'Missing username.'
     elif password == '':
         msg = 'Missing password.'
+
+    found_user = User.query.filter_by(username=username).first()
+    if found_user:
+        if decoding_password(found_user.password) != password:
+            msg = 'This password is incorrect!'
     else:
-        found_user = User.query.filter_by(username=username).first()
-        if found_user:
-            if decoding_password(found_user.password) != password:
-                msg = 'This password is incorrect!'
-        else:
-            msg = 'This username is not found. Please check you have written it correctly.'
+        msg = 'This username is not found. Please check you have written it correctly.'
 
     return msg, found_user
 
@@ -260,7 +260,7 @@ def get_image(result_id):
 
     # get n digit from result_id in which n is n_digits
     result_id = int(repr(result_id)[-n_digits:])
-    print(result_id)
+    # print(result_id)
 
     if result_id <= len(all_images)-1:
         return all_images[result_id]
@@ -268,6 +268,6 @@ def get_image(result_id):
     while True:
         result_id = int(result_id/2)
         if result_id < len(all_images)-1:
-            print(result_id)
+            # print(result_id)
             return all_images[result_id]
 

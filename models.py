@@ -2,8 +2,7 @@ from flask_login import UserMixin
 
 from extensions import db
 
-
-
+# tables
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -38,7 +37,7 @@ class Listing(db.Model):
     house_ID = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(120), nullable=False)
     district = db.Column(db.String(120), nullable=False)
-    type_room = db.Column(db.String(120), nullable=False)
+    type_room = db.Column(db.String(120), nullable=False) # 1 room, 2 room, all
     price = db.Column(db.Float, nullable=False)
     features = db.Column(db.String(300), nullable=False)
     owner_id = db.Column(db.Integer, nullable=False)

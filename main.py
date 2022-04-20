@@ -1,5 +1,5 @@
 
-from flask import render_template, request, session, flash, url_for, redirect
+from flask import render_template, request, flash, url_for, redirect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 
@@ -23,16 +23,18 @@ def load_user(user_id):
 
 
 # HOME section
-
+# @ wrapper=decorator
 # this method is called using 2 routes
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/<search_query>', methods=['POST', 'GET'])
 def index(search_query=None):
 
+
     if request.method == 'POST':
 
 
         district = request.form["district"]
+
 
 
 
@@ -657,7 +659,7 @@ def login():
 
     if request.method == 'POST':
 
-        username = request.form["username"]
+        username = request.form["username"] # form -> name="username"
         password = request.form["password"]
 
         msg, user = check_auth(username, password)
@@ -665,7 +667,7 @@ def login():
         if msg == '':
             # session["user"] = username
 
-            login_user(user)
+            login_user(user) # create current_user
 
 
             return redirect(url_for("index"))
@@ -691,7 +693,7 @@ def register():
         try:
             type_user = request.form['type_user']
         except Exception:
-            print('something went wrong')
+            # print('something went wrong')
             type_user='searcher'
 
         info_user = [username, email, password, password_confirm, name, type_user]
