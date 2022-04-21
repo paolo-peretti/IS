@@ -96,17 +96,18 @@ def check_email(email):
 def check_auth(username, password):
 
     msg = ''
+    found_user = ''
     if username == '':
         msg = 'Missing username.'
     elif password == '':
         msg = 'Missing password.'
-
-    found_user = User.query.filter_by(username=username).first()
-    if found_user:
-        if decoding_password(found_user.password) != password:
-            msg = 'This password is incorrect!'
-    else:
-        msg = 'This username is not found. Please check you have written it correctly.'
+    if msg == '':
+        found_user = User.query.filter_by(username=username).first()
+        if found_user:
+            if decoding_password(found_user.password) != password:
+                msg = 'This password is incorrect!'
+        else:
+            msg = 'This username is not found. Please check you have written it correctly.'
 
     return msg, found_user
 
