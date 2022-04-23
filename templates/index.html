@@ -217,7 +217,7 @@
                     <div class="col-sm-1" style="margin-top: 5%;">
 
         <!--                favorites-->
-
+<!--                        house_id in user_favorites  -->
                         {% if item[0][0] in user_favorites %}
 
                             <a href="{{ url_for('unlike',listing_id=item[0][0]) }}"  class="btn btn-outline-danger"><span class="fa fa-heart"></span></a>

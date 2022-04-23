@@ -141,9 +141,11 @@ def get_listings(search_query):
 
     result_query = db.engine.execute(query)
 
-    results = result_query.fetchall()
+    results = result_query.fetchall() # [(1,'ciao',..,n)]
 
     listings_with_images = []
+    # [((1,'ciao',..,n),img1), ((2,'ciao',..,n),img2)]
+    # listings_with_images[0][0] = ((1,'ciao',..,n),img1)
 
     if search_query[4] != [] or search_query[1] != '':  # features and types
 
@@ -157,13 +159,13 @@ def get_listings(search_query):
                 features = str(result[5])
 
                 if ',' in features:
-                    features = features.split(',')
+                    features = features.split(',') # from string 'ciao,ok' to list ['ciao','ok']
                 else:
                     features = [features]
 
 
                 # this is a check for the features the user is searching for.
-                check_features = all(result in features for result in search_query[4])
+                check_features = all(elem in features for elem in search_query[4])
 
 
             else:
@@ -176,7 +178,7 @@ def get_listings(search_query):
                 types_available = str(result[3])
 
 
-                types_available = types_available.split(',')
+                types_available = types_available.split(',') # database elem of type_room
 
 
 
@@ -276,6 +278,7 @@ def get_my_favorites(user_ID):
         result_query = db.engine.execute(query)
         results = result_query.fetchall()
 
+        # results = [(3,),(1,)]
 
         for listing in results:
             listings.append(int(listing[0]))
@@ -291,10 +294,10 @@ def get_my_favorites(user_ID):
 # ------------------------------------------------------------------------------------
 # CHAT
 
-def add_message(current_user, owner, message):
+def add_message(current_user, interlocutor, message):
 
     try:
-        msg = Message(current_user.id, owner.id, message)
+        msg = Message(current_user.id, interlocutor.id, message)
         db.session.add(msg)
         db.session.commit()
         return True
@@ -312,10 +315,12 @@ def get_my_chats(current_user):
 
     result_query = db.engine.execute(query)
 
-    messages = result_query.fetchall()
+    messages = result_query.fetchall() # [(1,2,'msg'),(2,1,'tr')]
 
     chats = {}
-    interlocutors = {}
+    # {'cc':[lista_messaggi],'yt':8} -> chats.keys()=['cc','yt']
+    interlocutors = {} # {1:'aa',2:'bb'} # interlocutors[1]->'aa'
+
 
     for msg in messages:
         if str(msg[0]) != str(current_user.id):
@@ -327,8 +332,9 @@ def get_my_chats(current_user):
 
             query = "SELECT username FROM public.users WHERE id='"+str(interlocutor_id)+"'"
             result_query = db.engine.execute(query)
-            interlocutor_name = result_query.fetchone()[0]
+            interlocutor_name = result_query.fetchone()[0] # ('user',)
 
+            # interlocutors['ciao']=12 -> interlocutors={'ciao':12}
             interlocutors[interlocutor_id] = interlocutor_name
         else:
             interlocutor_name = interlocutors[interlocutor_id]

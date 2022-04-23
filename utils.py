@@ -260,6 +260,7 @@ def get_image(result_id):
     n_digits = int(math.log10(len(all_images)-1)) + 1
 
     # get n digit from result_id in which n is n_digits
+    # result_id=123, 14->2cifre, -> result_id=23
     result_id = int(repr(result_id)[-n_digits:])
     # print(result_id)
 
@@ -267,7 +268,7 @@ def get_image(result_id):
         return all_images[result_id]
 
     while True:
-        result_id = int(result_id/2)
+        result_id = int(result_id/2) # 23>14 -> 11<14
         if result_id < len(all_images)-1:
             # print(result_id)
             return all_images[result_id]

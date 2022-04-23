@@ -69,6 +69,7 @@ def index(search_query=None):
 
 
 
+
         try:
             type_room = request.form['type_room']
         except Exception:
@@ -275,15 +276,15 @@ def chats(interlocutor):
 
 
         message = request.form["message"]
-        interlocutor = request.form["interlocutor"]
+        interlocutor = request.form["interlocutor"] # input hidden
 
 
         if message != '':
 
-            owner = User.query.filter_by(username=interlocutor).first()
+            interlocutor_info = User.query.filter_by(username=interlocutor).first()
 
-            if owner:
-                status = add_message(current_user, owner, message)
+            if interlocutor_info:
+                status = add_message(current_user, interlocutor_info, message)
 
                 if status == False:
                     flash('Something went wrong! Please try again later.', 'message')
@@ -296,7 +297,6 @@ def chats(interlocutor):
 
 
         messages = get_my_chats(current_user) # get all the messages in which the current user is involved
-        # session["messages"] = messages
 
 
         return render_template('chats.html', chats=messages, current_interlocutor=interlocutor, test_chats=True)
@@ -304,18 +304,18 @@ def chats(interlocutor):
 
     else:
 
-        test_chats = True
+        test_chats = True # check if the user has 1 chat
 
         if interlocutor == 'none':
 
 
-            messages = get_my_chats(current_user)
+            messages = get_my_chats(current_user) # {'aa':[(1,2,'ciao),(1,2,'ciao)]} 'aa'->1, current_user.id=1
 
 
             try:
                 interlocutor = list(messages.keys())[0]
             except Exception:
-                test_chats=False
+                test_chats = False
 
 
         else:
