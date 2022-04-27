@@ -186,7 +186,7 @@ def write_review(listing_id):
 
     if request.method == 'POST':
 
-        review = request.form["review"]
+        review = request.form["review"] # text
         num_flag = request.form['num_flag']
 
         check_review = False
@@ -349,7 +349,7 @@ def chats(interlocutor):
 @login_required
 def my_listings():
 
-    listings = get_my_listings(current_user)
+    listings = get_my_listings(current_user) # listings the renter owns
     return render_template('my_listings.html', items=listings)
 
 
@@ -427,7 +427,7 @@ def add_listing():
 
 
         try:
-            types_str = ','.join(types)
+            types_str = ','.join(types) # ['ciao','123'] -> 'ciao,123'
         except Exception:
             types_str = ''
         try:
@@ -462,10 +462,7 @@ def add_listing():
             return render_template('add_listing.html', all_districts=all_districts, type='add')
 
 
-
-
     else:
-
 
         return render_template('add_listing.html', all_districts=all_districts, type='add')
 
@@ -567,7 +564,6 @@ def update_listing(listing_id):
 
         else: # GET
             return render_template('add_listing.html', all_districts=all_districts, type='update', listing_info=listing_info)
-
 
 
 
@@ -857,9 +853,10 @@ def update_user_informations():
 
             return render_template('login.html', type='update')
 
+
+
         flash('Something went wrong, please try again.', 'error')
         return render_template('login.html', type='update')
-
 
 
     else:

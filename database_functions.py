@@ -222,7 +222,7 @@ def get_my_listings(current_user):
     result_query = db.engine.execute(query)
     listings = result_query.fetchall() # get all the results of the query
 
-    listings_with_images = []
+    listings_with_images = [] # [(listing1, img1), (listing2, img2)]
 
     for listing in listings:
         img = get_image(listing[0])

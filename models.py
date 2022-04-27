@@ -75,7 +75,7 @@ class Review(db.Model):
     user_ID = db.Column(db.Integer, nullable=False) # user
     listing_ID = db.Column(db.Integer, nullable=False) # could be the listing
     text = db.Column(db.String(1200), nullable=False)
-    num_flag = db.Column(db.Integer, nullable=False)
+    num_flag = db.Column(db.Integer, nullable=False) # 1 to 10
 
 
     def __init__(self, user_ID, listing_ID, text, num_flag):
